@@ -1,0 +1,590 @@
+{
+ "sheet": "sources",
+ "doc": "Every piece of game content the mashup uses: where the extractor finds it in the player's own install, where it goes in the cache, and what the mod shows if it can't be read. Nothing here is ever shipped.",
+ "columns": {
+  "id": {
+   "type": "string",
+   "required": true
+  },
+  "game": {
+   "type": "enum",
+   "values": [
+    "halo-mcc",
+    "gta-v",
+    "fortnite"
+   ],
+   "required": true
+  },
+  "kind": {
+   "type": "enum",
+   "values": [
+    "mesh",
+    "texture",
+    "icon",
+    "sound",
+    "stats"
+   ],
+   "required": true
+  },
+  "locator": {
+   "type": "string",
+   "required": true,
+   "doc": "primary way the extractor finds it in the player's install"
+  },
+  "fallback": {
+   "type": "string",
+   "required": true,
+   "doc": "second way, or 'none'"
+  },
+  "maxTris": {
+   "type": "int",
+   "required": true,
+   "doc": "triangle budget after decimation (0 for non-mesh)"
+  },
+  "out": {
+   "type": "string",
+   "required": true,
+   "doc": "path inside cache/packs/<game>/assets/crafttheft/ (or cache/stats/)"
+  },
+  "placeholder": {
+   "type": "string",
+   "required": true,
+   "doc": "what the mod shows when extraction failed (shipped in the jar, original art)"
+  }
+ },
+ "rows": [
+  {
+   "id": "halo_mesh_assault_rifle",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\rifle\\assault_rifle\\assault_rifle' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'assault'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/assault_rifle.cthm",
+   "placeholder": "box gun model 'placeholder_gun'"
+  },
+  {
+   "id": "halo_mesh_magnum",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\pistol\\magnum\\magnum' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'magnum'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/magnum.cthm",
+   "placeholder": "box gun model 'placeholder_gun'"
+  },
+  {
+   "id": "halo_mesh_battle_rifle",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\rifle\\battle_rifle\\battle_rifle' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'battle'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/battle_rifle.cthm",
+   "placeholder": "box gun model 'placeholder_gun'"
+  },
+  {
+   "id": "halo_mesh_shotgun",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\rifle\\shotgun\\shotgun' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'shotgun'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/shotgun.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_sniper_rifle",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\rifle\\sniper_rifle\\sniper_rifle' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'sniper'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/sniper_rifle.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_plasma_rifle",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\rifle\\plasma_rifle\\plasma_rifle' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'plasma'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/plasma_rifle.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_needler",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\pistol\\needler\\needler' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'needler'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/needler.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_rocket_launcher",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): weap 'objects\\weapons\\support_high\\rocket_launcher\\rocket_launcher' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'rocket'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/rocket_launcher.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_frag_grenade",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): eqip 'objects\\weapons\\grenade\\frag_grenade\\frag_grenade' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'frag'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/frag_grenade.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_mesh_plasma_grenade",
+   "game": "halo-mcc",
+   "kind": "mesh",
+   "locator": "halo3/maps/riverworld.map (+shared.map): eqip 'objects\\weapons\\grenade\\plasma_grenade\\plasma_grenade' -> hlmt -> mode render model, highest LOD, diffuse textures",
+   "fallback": "mulg Universal Weapon Selections / matg Grenades by name containing 'plasma'; then campaign maps",
+   "maxTris": 3000,
+   "out": "meshes/halo/plasma_grenade.cthm",
+   "placeholder": "box gun model 'placeholder_gun'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_snd_assault_rifle_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\rifle\\assault_rifle\\assault_rifle' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\assault_rifle\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/assault_rifle_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_magnum_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\pistol\\magnum\\magnum' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\magnum\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/magnum_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_battle_rifle_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\rifle\\battle_rifle\\battle_rifle' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\battle_rifle\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/battle_rifle_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_shotgun_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\rifle\\shotgun\\shotgun' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\shotgun\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/shotgun_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_sniper_rifle_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\rifle\\sniper_rifle\\sniper_rifle' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\sniper_rifle\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/sniper_rifle_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_plasma_rifle_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\rifle\\plasma_rifle\\plasma_rifle' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\plasma_rifle\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/plasma_rifle_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_needler_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\pistol\\needler\\needler' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\needler\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/needler_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_rocket_launcher_fire",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "weap 'objects\\weapons\\support_high\\rocket_launcher\\rocket_launcher' barrel firing effect -> snd! -> ugh! permutation FMOD hash -> halo3/fmod/pc/sfx.fsb.info record -> sfx.fsb sample (Vorbis, remuxed to OGG)",
+   "fallback": "sfx.fsb.info filename matching data\\sound\\weapons\\rocket_launcher\\*fire*",
+   "maxTris": 0,
+   "out": "sounds/halo/rocket_launcher_fire.ogg",
+   "placeholder": "vanilla minecraft:entity.firework_rocket.blast",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_grenade_throw",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "sfx.fsb.info filename matching data\\sound\\weapons\\*grenade*\\*throw*",
+   "fallback": "none",
+   "maxTris": 0,
+   "out": "sounds/halo/grenade_throw.ogg",
+   "placeholder": "vanilla minecraft:entity.snowball.throw",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "halo_snd_shield_recharge",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "matg Player Representation -> biped -> hlmt shield recharging effect -> snd!",
+   "fallback": "sfx.fsb.info filename matching *shield*charg*",
+   "maxTris": 0,
+   "out": "sounds/halo/shield_recharge.ogg",
+   "placeholder": "vanilla minecraft:block.beacon.power_select",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_snd_shield_depleted",
+   "game": "halo-mcc",
+   "kind": "sound",
+   "locator": "hlmt shield depleted effect -> snd!",
+   "fallback": "sfx.fsb.info filename matching *shield*(deplet|down|empty)*",
+   "maxTris": 0,
+   "out": "sounds/halo/shield_depleted.ogg",
+   "placeholder": "vanilla minecraft:block.beacon.deactivate",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "halo_stats_weapons",
+   "game": "halo-mcc",
+   "kind": "stats",
+   "locator": "weap Magazines 0x424 / Barrels 0x43C, proj 0x23C, jpt! 0x1C (Assembly Halo3MCC offsets) for every weapon row",
+   "fallback": "sheet defaults (weapons sheet)",
+   "maxTris": 0,
+   "out": "stats/halo_weapons.json",
+   "placeholder": "sheet defaults"
+  },
+  {
+   "id": "halo_stats_shield",
+   "game": "halo-mcc",
+   "kind": "stats",
+   "locator": "matg Player Representation -> biped -> hlmt New Damage Info 0x88 (shield 0x20, stun 0x2C, recharge 0x30)",
+   "fallback": "sheet defaults (systems shield rows)",
+   "maxTris": 0,
+   "out": "stats/halo_shield.json",
+   "placeholder": "sheet defaults"
+  },
+  {
+   "id": "gta_mesh_infernus",
+   "game": "gta-v",
+   "kind": "mesh",
+   "locator": "x64e.rpf/levels/gta5/vehicles.rpf/infernus.yft (+infernus.ytd, vehshare.ytd via txdRelationships), body + wheels from physics-LOD children",
+   "fallback": "update/x64/dlcpacks/*/dlc.rpf/**/infernus.yft; then update.rpf",
+   "maxTris": 8000,
+   "out": "meshes/gta/infernus.cthm",
+   "placeholder": "box car model 'placeholder_car'",
+   "_unverified": [
+    "fallback"
+   ]
+  },
+  {
+   "id": "gta_mesh_sultan",
+   "game": "gta-v",
+   "kind": "mesh",
+   "locator": "x64e.rpf/levels/gta5/vehicles.rpf/sultan.yft (+sultan.ytd, vehshare.ytd via txdRelationships), body + wheels from physics-LOD children",
+   "fallback": "update/x64/dlcpacks/*/dlc.rpf/**/sultan.yft; then update.rpf",
+   "maxTris": 8000,
+   "out": "meshes/gta/sultan.cthm",
+   "placeholder": "box car model 'placeholder_car'",
+   "_unverified": [
+    "fallback"
+   ]
+  },
+  {
+   "id": "gta_mesh_blista",
+   "game": "gta-v",
+   "kind": "mesh",
+   "locator": "x64e.rpf/levels/gta5/vehicles.rpf/blista.yft (+blista.ytd, vehshare.ytd via txdRelationships), body + wheels from physics-LOD children",
+   "fallback": "update/x64/dlcpacks/*/dlc.rpf/**/blista.yft; then update.rpf",
+   "maxTris": 8000,
+   "out": "meshes/gta/blista.cthm",
+   "placeholder": "box car model 'placeholder_car'",
+   "_unverified": [
+    "fallback"
+   ]
+  },
+  {
+   "id": "gta_mesh_police",
+   "game": "gta-v",
+   "kind": "mesh",
+   "locator": "x64e.rpf/levels/gta5/vehicles.rpf/police.yft (+police.ytd, vehshare.ytd via txdRelationships), body + wheels from physics-LOD children",
+   "fallback": "update/x64/dlcpacks/*/dlc.rpf/**/police.yft; then update.rpf",
+   "maxTris": 8000,
+   "out": "meshes/gta/police.cthm",
+   "placeholder": "box car model 'placeholder_car'",
+   "_unverified": [
+    "fallback"
+   ]
+  },
+  {
+   "id": "gta_snd_siren",
+   "game": "gta-v",
+   "kind": "sound",
+   "locator": "x64/audio/sfx/RESIDENT.rpf/vehicles.awc streams 0x0D329446, 0x159C9182, 0x161768E7 (IMA-ADPCM -> OGG)",
+   "fallback": "longest looping stream in vehicles.awc whose id matches a siren name hash",
+   "maxTris": 0,
+   "out": "sounds/gta/siren.ogg",
+   "placeholder": "vanilla minecraft:block.note_block.bit (pitched loop)",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "gta_snd_horn",
+   "game": "gta-v",
+   "kind": "sound",
+   "locator": "x64/audio/sfx/RESIDENT.rpf/vehicles.awc stream named by hash of 'horn_*' (logged census on first run)",
+   "fallback": "none",
+   "maxTris": 0,
+   "out": "sounds/gta/horn.ogg",
+   "placeholder": "vanilla minecraft:block.note_block.didgeridoo",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "gta_tex_wanted_star",
+   "game": "gta-v",
+   "kind": "icon",
+   "locator": "commonmenu.ytd / shop_new_star (name search across x64*.rpf textures/*.rpf)",
+   "fallback": "none",
+   "maxTris": 0,
+   "out": "textures/gui/gta/wanted_star.png",
+   "placeholder": "original 16x16 star in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_icon_bandages",
+   "game": "fortnite",
+   "kind": "icon",
+   "locator": "asset registry item definition named (WID_Paprika_Bandage|Athena_Bandage|Figment_Athena_Bandage) -> DataList LargeIcon/Icon -> Texture2D",
+   "fallback": "any ItemDefinition whose DisplayName matches the item name",
+   "maxTris": 0,
+   "out": "textures/item/fortnite/bandages.png",
+   "placeholder": "original 16x16 item sprite in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_icon_med_kit",
+   "game": "fortnite",
+   "kind": "icon",
+   "locator": "asset registry item definition named (WID_Paprika_MedBox|Athena_Medkit|Figment_Athena_Medkit) -> DataList LargeIcon/Icon -> Texture2D",
+   "fallback": "any ItemDefinition whose DisplayName matches the item name",
+   "maxTris": 0,
+   "out": "textures/item/fortnite/med_kit.png",
+   "placeholder": "original 16x16 item sprite in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_icon_small_shield_potion",
+   "game": "fortnite",
+   "kind": "icon",
+   "locator": "asset registry item definition named (WID_Paprika_ShieldSmall|Athena_ShieldSmall) -> DataList LargeIcon/Icon -> Texture2D",
+   "fallback": "any ItemDefinition whose DisplayName matches the item name",
+   "maxTris": 0,
+   "out": "textures/item/fortnite/small_shield_potion.png",
+   "placeholder": "original 16x16 item sprite in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_icon_shield_potion",
+   "game": "fortnite",
+   "kind": "icon",
+   "locator": "asset registry item definition named (WID_Paprika_ShieldPot|Athena_Shields|Figment_Athena_Shields) -> DataList LargeIcon/Icon -> Texture2D",
+   "fallback": "any ItemDefinition whose DisplayName matches the item name",
+   "maxTris": 0,
+   "out": "textures/item/fortnite/shield_potion.png",
+   "placeholder": "original 16x16 item sprite in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_icon_chug_jug",
+   "game": "fortnite",
+   "kind": "icon",
+   "locator": "asset registry item definition named (Figment_Athena_SuperMedkit|Athena_SuperMedkit|Clyde_Athena_SuperMedkit) -> DataList LargeIcon/Icon -> Texture2D",
+   "fallback": "any ItemDefinition whose DisplayName matches the item name",
+   "maxTris": 0,
+   "out": "textures/item/fortnite/chug_jug.png",
+   "placeholder": "original 16x16 item sprite in the jar",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_mesh_battle_bus",
+   "game": "fortnite",
+   "kind": "mesh",
+   "locator": "AthenaBattleBusItemDefinition BBID_DefaultBus -> BusPrefabClass -> StockBattleBusCosmeticBase.BusStaticMesh",
+   "fallback": "first AthenaBattleBusItemDefinition not matching Armored|Toy|Emoji|Spray",
+   "maxTris": 8000,
+   "out": "meshes/fortnite/battle_bus.cthm",
+   "placeholder": "box bus model 'placeholder_bus'",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_mesh_glider",
+   "game": "fortnite",
+   "kind": "mesh",
+   "locator": "AthenaGliderItemDefinition named Glider_Default / Umbrella_Default -> SkeletalMesh LOD0",
+   "fallback": "first AthenaGliderItemDefinition",
+   "maxTris": 4000,
+   "out": "meshes/fortnite/glider.cthm",
+   "placeholder": "flat wing model 'placeholder_glider'",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "fn_mesh_chest",
+   "game": "fortnite",
+   "kind": "mesh",
+   "locator": "BuildingContainer blueprint matching (?i)tiered_chest -> SCS StaticMeshComponent mesh",
+   "fallback": "BuildingContainer with NativeParentClass tag and name matching (?i)chest, excluding ammo|cooler|safe|toolbox|stw",
+   "maxTris": 3000,
+   "out": "meshes/fortnite/chest.cthm",
+   "placeholder": "vanilla chest model",
+   "_unverified": [
+    "locator"
+   ]
+  },
+  {
+   "id": "fn_snd_chest_open",
+   "game": "fortnite",
+   "kind": "sound",
+   "locator": "BuildingContainer SearchingSoundCueLoop / open sound (SoundWave: OGG kept as-is, BINKA decoded)",
+   "fallback": "SoundWave named (?i)chest.*(open|search)",
+   "maxTris": 0,
+   "out": "sounds/fortnite/chest_open.ogg",
+   "placeholder": "vanilla minecraft:block.chest.open",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "fn_snd_drink",
+   "game": "fortnite",
+   "kind": "sound",
+   "locator": "FortItemComponentData of the shield potion item -> use/consume SoundWave",
+   "fallback": "SoundWave named (?i)(shield.*(drink|consume|use))",
+   "maxTris": 0,
+   "out": "sounds/fortnite/drink.ogg",
+   "placeholder": "vanilla minecraft:entity.generic.drink",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  },
+  {
+   "id": "fn_snd_heal_use",
+   "game": "fortnite",
+   "kind": "sound",
+   "locator": "FortItemComponentData of the bandage/medkit item -> use SoundWave",
+   "fallback": "SoundWave named (?i)(bandage|med_?kit|medbox).*(use|apply)",
+   "maxTris": 0,
+   "out": "sounds/fortnite/heal_use.ogg",
+   "placeholder": "vanilla minecraft:item.armor.equip_leather",
+   "_unverified": [
+    "locator",
+    "fallback"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,196 @@
+{
+ "sheet": "hooks",
+ "doc": "Every place the mod hooks into Minecraft (1.21.1, Fabric API 0.116.17, Mojang names).",
+ "columns": {
+  "id": {
+   "type": "string",
+   "required": true
+  },
+  "side": {
+   "type": "enum",
+   "values": [
+    "server",
+    "client",
+    "both"
+   ],
+   "required": true
+  },
+  "event": {
+   "type": "string",
+   "required": true,
+   "doc": "Fabric API event, mixin target or vanilla override (Mojang names, MC 1.21.1)"
+  },
+  "handler": {
+   "type": "string",
+   "required": true,
+   "doc": "our class.method"
+  },
+  "purpose": {
+   "type": "string",
+   "required": true
+  }
+ },
+ "rows": [
+  {
+   "id": "attack_entity",
+   "side": "server",
+   "event": "AttackEntityCallback.EVENT",
+   "handler": "CrimeSystem.onAttack",
+   "purpose": "villager/golem/police assault -> wanted stars"
+  },
+  {
+   "id": "entity_death",
+   "side": "server",
+   "event": "ServerLivingEntityEvents.AFTER_DEATH",
+   "handler": "CrimeSystem.onDeath",
+   "purpose": "killing a villager -> wanted stars"
+  },
+  {
+   "id": "player_damaged",
+   "side": "server",
+   "event": "ServerLivingEntityEvents.AFTER_DAMAGE",
+   "handler": "ShieldSystem.onDamaged",
+   "purpose": "reset Halo shield recharge delay, depleted sound"
+  },
+  {
+   "id": "car_enter",
+   "side": "server",
+   "event": "CarEntity.interact (Entity override)",
+   "handler": "CarEntity.interact -> CrimeSystem.onCarEnter",
+   "purpose": "driving off in a car you don't own -> stealing"
+  },
+  {
+   "id": "car_damaged",
+   "side": "server",
+   "event": "CarEntity.hurt (Entity override)",
+   "handler": "CarEntity.hurt -> CrimeSystem.onPoliceAttacked",
+   "purpose": "damaging a police car -> wanted stars"
+  },
+  {
+   "id": "weapon_fire",
+   "side": "server",
+   "event": "C2S payload crafttheft:trigger (ServerPlayNetworking)",
+   "handler": "WeaponSystem.onTrigger -> CrimeSystem.onGunfire",
+   "purpose": "server-side firing; gunfire near villagers is a crime"
+  },
+  {
+   "id": "server_tick",
+   "side": "server",
+   "event": "ServerTickEvents.END_SERVER_TICK",
+   "handler": "GameTick.tick",
+   "purpose": "wanted/police, shield recharge, bus route, skydive, heals in progress"
+  },
+  {
+   "id": "server_started",
+   "side": "server",
+   "event": "ServerLifecycleEvents.SERVER_STARTED",
+   "handler": "WorldSetup.onServerStarted",
+   "purpose": "place loot chests + parked cars once per world (SavedData)"
+  },
+  {
+   "id": "player_join",
+   "side": "server",
+   "event": "ServerPlayConnectionEvents.JOIN",
+   "handler": "BattleBus.onJoin",
+   "purpose": "board the Battle Bus on a player's first join in a world"
+  },
+  {
+   "id": "chunk_generate",
+   "side": "server",
+   "event": "ServerChunkEvents.CHUNK_LOAD (new chunks)",
+   "handler": "WorldSetup.onChunkGenerated",
+   "purpose": "park cars on village streets"
+  },
+  {
+   "id": "hud",
+   "side": "client",
+   "event": "HudRenderCallback.EVENT",
+   "handler": "Hud.render",
+   "purpose": "wanted stars, Halo shield bar, ammo counter, heal progress, bus 'press jump' prompt"
+  },
+  {
+   "id": "client_tick",
+   "side": "client",
+   "event": "ClientTickEvents.END_CLIENT_TICK",
+   "handler": "ClientInput.tick",
+   "purpose": "send trigger state, reload key, zoom, jump-to-drop"
+  },
+  {
+   "id": "pre_attack",
+   "side": "client",
+   "event": "ClientPreAttackCallback.EVENT",
+   "handler": "ClientInput.onPreAttack",
+   "purpose": "holding a gun: left click fires instead of punching"
+  },
+  {
+   "id": "cache_pack",
+   "side": "client",
+   "event": "mixin PackRepository#<init>/reload (add RepositorySource)",
+   "handler": "CachePacks.addSources",
+   "purpose": "register cache/packs/<game> as required top-priority resource packs"
+  },
+  {
+   "id": "mesh_reload",
+   "side": "client",
+   "event": "ResourceManagerHelper.get(CLIENT_RESOURCES).registerReloadListener",
+   "handler": "MeshCache.reload",
+   "purpose": "load .cthm meshes from the resource packs"
+  },
+  {
+   "id": "item_renderer",
+   "side": "client",
+   "event": "BuiltinItemRendererRegistry.INSTANCE.register",
+   "handler": "WeaponItemRenderer.render",
+   "purpose": "draw Halo weapon meshes in hand"
+  },
+  {
+   "id": "entity_renderers",
+   "side": "client",
+   "event": "EntityRendererRegistry.register",
+   "handler": "CarRenderer/BusRenderer/ProjectileRenderer",
+   "purpose": "draw GTA cars, the Battle Bus, Halo projectiles"
+  },
+  {
+   "id": "chest_renderer",
+   "side": "client",
+   "event": "BlockEntityRenderers.register",
+   "handler": "LootChestRenderer.render",
+   "purpose": "draw the Fortnite chest mesh"
+  },
+  {
+   "id": "camera",
+   "side": "client",
+   "event": "mixin Camera#setup (getMaxZoom)",
+   "handler": "CameraMixin",
+   "purpose": "pull the camera back while riding the bus / skydiving / driving"
+  },
+  {
+   "id": "fov_zoom",
+   "side": "client",
+   "event": "mixin AbstractClientPlayer#getFieldOfViewModifier",
+   "handler": "ZoomMixin",
+   "purpose": "sniper/battle rifle scope zoom"
+  },
+  {
+   "id": "client_started",
+   "side": "client",
+   "event": "ClientLifecycleEvents.CLIENT_STARTED",
+   "handler": "CacheGuard.onClientStarted",
+   "purpose": "run/refresh the extractor if the cache is missing or failed; reload resources"
+  },
+  {
+   "id": "first_options",
+   "side": "client",
+   "event": "ClientModInitializer (before options load)",
+   "handler": "FirstRun.writeOptions",
+   "purpose": "skip the accessibility onboarding screen on first start"
+  },
+  {
+   "id": "test_mode",
+   "side": "both",
+   "event": "system property / melty test file",
+   "handler": "MeltyTest.tick",
+   "purpose": "Melty test runs: play a scripted scenario and log check results"
+  }
+ ]
+}
