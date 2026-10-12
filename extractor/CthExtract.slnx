@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CthExtract.Core/CthExtract.Core.csproj" />
+    <Project Path="src/CthExtract.Fortnite/CthExtract.Fortnite.csproj" />
+    <Project Path="src/CthExtract.Gta/CthExtract.Gta.csproj" />
+    <Project Path="src/CthExtract.Halo/CthExtract.Halo.csproj" />
+  </Folder>
+</Solution>
