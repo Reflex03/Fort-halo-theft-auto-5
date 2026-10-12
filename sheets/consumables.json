@@ -1,0 +1,24 @@
+{
+  "sheet": "consumables",
+  "doc": "Fortnite heals. Icons and use sounds come from the player's own Fortnite install. Shield and health use Fortnite's 0-100 scale; systems.combat maps them to Minecraft.",
+  "columns": {
+    "id":        {"type": "string", "required": true},
+    "name":      {"type": "string", "required": true},
+    "useTicks":  {"type": "int", "required": true},
+    "health":    {"type": "int", "required": true, "doc": "Fortnite HP restored (0-100)"},
+    "healthCap": {"type": "int", "required": true, "doc": "won't heal above this (Fortnite HP)"},
+    "shield":    {"type": "int", "required": true, "doc": "shield points restored (0-100)"},
+    "shieldCap": {"type": "int", "required": true},
+    "maxStack":  {"type": "int", "required": true},
+    "icon":      {"type": "ref", "ref": "sources.id", "required": true},
+    "useSound":  {"type": "ref", "ref": "sources.id", "required": true},
+    "rarity":    {"type": "enum", "values": ["common", "uncommon", "rare", "epic", "legendary"], "required": true}
+  },
+  "rows": [
+    {"id": "bandages",            "name": "Bandages",            "useTicks": 70,  "health": 15,  "healthCap": 75,  "shield": 0,   "shieldCap": 0,   "maxStack": 15, "icon": "fn_icon_bandages",            "useSound": "fn_snd_heal_use", "rarity": "common"},
+    {"id": "med_kit",             "name": "Med Kit",             "useTicks": 200, "health": 100, "healthCap": 100, "shield": 0,   "shieldCap": 0,   "maxStack": 3,  "icon": "fn_icon_med_kit",             "useSound": "fn_snd_heal_use", "rarity": "uncommon"},
+    {"id": "small_shield_potion", "name": "Small Shield Potion", "useTicks": 40,  "health": 0,   "healthCap": 0,   "shield": 25,  "shieldCap": 50,  "maxStack": 6,  "icon": "fn_icon_small_shield_potion", "useSound": "fn_snd_drink",    "rarity": "uncommon"},
+    {"id": "shield_potion",       "name": "Shield Potion",       "useTicks": 100, "health": 0,   "healthCap": 0,   "shield": 50,  "shieldCap": 100, "maxStack": 3,  "icon": "fn_icon_shield_potion",       "useSound": "fn_snd_drink",    "rarity": "rare"},
+    {"id": "chug_jug",            "name": "Chug Jug",            "useTicks": 300, "health": 100, "healthCap": 100, "shield": 100, "shieldCap": 100, "maxStack": 1,  "icon": "fn_icon_chug_jug",            "useSound": "fn_snd_drink",    "rarity": "legendary"}
+  ]
+}

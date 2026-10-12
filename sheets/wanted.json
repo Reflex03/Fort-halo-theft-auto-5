@@ -1,0 +1,20 @@
+{
+  "sheet": "wanted",
+  "doc": "Police response per GTA wanted level.",
+  "columns": {
+    "stars":          {"type": "int", "required": true},
+    "maxPoliceCars":  {"type": "int", "required": true},
+    "spawnEveryTicks":{"type": "int", "required": true},
+    "spawnDistance":  {"type": "number", "required": true},
+    "officersShoot":  {"type": "bool", "required": true},
+    "loseAfterTicks": {"type": "int", "required": true, "doc": "ticks out of police sight before the level drops by one"},
+    "policeVehicle":  {"type": "ref", "ref": "vehicles.id", "required": true}
+  },
+  "rows": [
+    {"stars": 1, "maxPoliceCars": 1, "spawnEveryTicks": 300, "spawnDistance": 40, "officersShoot": false, "loseAfterTicks": 400,  "policeVehicle": "police"},
+    {"stars": 2, "maxPoliceCars": 2, "spawnEveryTicks": 240, "spawnDistance": 40, "officersShoot": false, "loseAfterTicks": 600,  "policeVehicle": "police"},
+    {"stars": 3, "maxPoliceCars": 3, "spawnEveryTicks": 200, "spawnDistance": 45, "officersShoot": true,  "loseAfterTicks": 800,  "policeVehicle": "police"},
+    {"stars": 4, "maxPoliceCars": 4, "spawnEveryTicks": 160, "spawnDistance": 50, "officersShoot": true,  "loseAfterTicks": 1000, "policeVehicle": "police"},
+    {"stars": 5, "maxPoliceCars": 6, "spawnEveryTicks": 120, "spawnDistance": 55, "officersShoot": true,  "loseAfterTicks": 1400, "policeVehicle": "police"}
+  ]
+}

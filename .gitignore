@@ -1,0 +1,18 @@
+# build outputs
+build/
+bin/
+obj/
+.gradle/
+run/
+out/
+dist/
+*.zip
+# never commit game content or caches extracted from a player's games
+cache/
+extracted/
+*.rpf
+*.map
+*.pak
+*.utoc
+*.ucas
+*.fsb

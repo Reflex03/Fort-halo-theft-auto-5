@@ -1,0 +1,19 @@
+{
+  "sheet": "crimes",
+  "doc": "Things that raise GTA wanted stars. hook names a row in hooks.",
+  "columns": {
+    "id":      {"type": "string", "required": true},
+    "name":    {"type": "string", "required": true},
+    "hook":    {"type": "ref", "ref": "hooks.id", "required": true},
+    "stars":   {"type": "int", "required": true, "doc": "minimum wanted level this crime sets"},
+    "addStars":{"type": "int", "required": true, "doc": "stars added on top when already wanted"}
+  },
+  "rows": [
+    {"id": "assault_villager", "name": "Assaulting a villager",  "hook": "attack_entity",  "stars": 1, "addStars": 0},
+    {"id": "kill_villager",    "name": "Killing a villager",     "hook": "entity_death",   "stars": 2, "addStars": 1},
+    {"id": "assault_golem",    "name": "Attacking an iron golem","hook": "attack_entity",  "stars": 2, "addStars": 0},
+    {"id": "steal_car",        "name": "Stealing a car",         "hook": "car_enter",      "stars": 1, "addStars": 0},
+    {"id": "assault_police",   "name": "Attacking the police",   "hook": "car_damaged",    "stars": 3, "addStars": 1},
+    {"id": "gunfire",          "name": "Firing near villagers",  "hook": "weapon_fire",    "stars": 1, "addStars": 0}
+  ]
+}

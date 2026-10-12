@@ -1,0 +1,28 @@
+{
+  "sheet": "loot",
+  "doc": "What a loot chest can roll. Each chest rolls 'rolls' entries from its pool by weight.",
+  "columns": {
+    "pool":     {"type": "enum", "values": ["chest", "rare_chest"], "required": true},
+    "item":     {"type": "ref", "ref": ["weapons.id", "consumables.id"], "required": true},
+    "weight":   {"type": "int", "required": true},
+    "countMin": {"type": "int", "required": true},
+    "countMax": {"type": "int", "required": true}
+  },
+  "rows": [
+    {"pool": "chest", "item": "assault_rifle",       "weight": 14, "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "magnum",              "weight": 14, "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "battle_rifle",        "weight": 9,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "shotgun",             "weight": 7,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "plasma_rifle",        "weight": 9,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "needler",             "weight": 6,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "sniper_rifle",        "weight": 3,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "rocket_launcher",     "weight": 1,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "frag_grenade",        "weight": 10, "countMin": 1, "countMax": 3},
+    {"pool": "chest", "item": "plasma_grenade",      "weight": 7,  "countMin": 1, "countMax": 2},
+    {"pool": "chest", "item": "bandages",            "weight": 14, "countMin": 3, "countMax": 5},
+    {"pool": "chest", "item": "med_kit",             "weight": 6,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "small_shield_potion", "weight": 12, "countMin": 2, "countMax": 3},
+    {"pool": "chest", "item": "shield_potion",       "weight": 7,  "countMin": 1, "countMax": 1},
+    {"pool": "chest", "item": "chug_jug",            "weight": 1,  "countMin": 1, "countMax": 1}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "sheet": "weapons",
+  "doc": "Halo 3 weapons. Models, textures and sounds come from the player's own MCC install (sources sheet). Stats here are Halo 3 defaults in Halo damage points; the extractor overwrites damage/rate/clip from the weapon's own tags when it can read them (stats.json in the cache). 1 Halo point = haloToMc hearts-half-points (systems.combat).",
+  "columns": {
+    "id":              {"type": "string", "required": true},
+    "name":            {"type": "string", "required": true},
+    "kind":            {"type": "enum", "values": ["hitscan", "projectile", "rocket", "grenade"], "required": true},
+    "damage":          {"type": "number", "required": true, "doc": "Halo points per bullet/pellet/impact"},
+    "pellets":         {"type": "int", "required": true},
+    "burst":           {"type": "int", "required": true, "doc": "rounds per trigger pull"},
+    "fireIntervalTicks": {"type": "int", "required": true},
+    "auto":            {"type": "bool", "required": true},
+    "clip":            {"type": "int", "required": true},
+    "reserve":         {"type": "int", "required": true},
+    "reloadTicks":     {"type": "int", "required": true},
+    "spreadDeg":       {"type": "number", "required": true},
+    "range":           {"type": "number", "required": true, "doc": "blocks"},
+    "projectileSpeed": {"type": "number", "required": true, "doc": "blocks/tick; 0 for hitscan"},
+    "homing":          {"type": "bool", "required": true},
+    "blastRadius":     {"type": "number", "required": true},
+    "zoom":            {"type": "number", "required": true, "doc": "FOV multiplier when using (1 = none)"},
+    "model":           {"type": "ref", "ref": "sources.id", "required": true},
+    "fireSound":       {"type": "ref", "ref": "sources.id", "required": true},
+    "rarity":          {"type": "enum", "values": ["common", "uncommon", "rare", "epic", "legendary"], "required": true}
+  },
+  "rows": [
+    {"id": "assault_rifle",   "name": "MA5C Assault Rifle", "kind": "hitscan",    "damage": 7.5, "pellets": 1,  "burst": 1, "fireIntervalTicks": 2,  "auto": true,  "clip": 32, "reserve": 192, "reloadTicks": 44, "spreadDeg": 2.5, "range": 48,  "projectileSpeed": 0,   "homing": false, "blastRadius": 0,   "zoom": 1,    "model": "halo_mesh_assault_rifle",   "fireSound": "halo_snd_assault_rifle_fire",   "rarity": "common"},
+    {"id": "magnum",          "name": "M6G Magnum",         "kind": "hitscan",    "damage": 12,  "pellets": 1,  "burst": 1, "fireIntervalTicks": 5,  "auto": false, "clip": 8,  "reserve": 48,  "reloadTicks": 30, "spreadDeg": 0.6, "range": 64,  "projectileSpeed": 0,   "homing": false, "blastRadius": 0,   "zoom": 1,    "model": "halo_mesh_magnum",          "fireSound": "halo_snd_magnum_fire",          "rarity": "common"},
+    {"id": "battle_rifle",    "name": "BR55 Battle Rifle",  "kind": "hitscan",    "damage": 6,   "pellets": 1,  "burst": 3, "fireIntervalTicks": 9,  "auto": false, "clip": 36, "reserve": 108, "reloadTicks": 42, "spreadDeg": 0.4, "range": 96,  "projectileSpeed": 0,   "homing": false, "blastRadius": 0,   "zoom": 0.5,  "model": "halo_mesh_battle_rifle",    "fireSound": "halo_snd_battle_rifle_fire",    "rarity": "uncommon"},
+    {"id": "shotgun",         "name": "M90 Shotgun",        "kind": "hitscan",    "damage": 10,  "pellets": 15, "burst": 1, "fireIntervalTicks": 18, "auto": false, "clip": 6,  "reserve": 24,  "reloadTicks": 60, "spreadDeg": 7,   "range": 14,  "projectileSpeed": 0,   "homing": false, "blastRadius": 0,   "zoom": 1,    "model": "halo_mesh_shotgun",         "fireSound": "halo_snd_shotgun_fire",         "rarity": "rare"},
+    {"id": "sniper_rifle",    "name": "SRS99 Sniper Rifle", "kind": "hitscan",    "damage": 80,  "pellets": 1,  "burst": 1, "fireIntervalTicks": 14, "auto": false, "clip": 4,  "reserve": 12,  "reloadTicks": 56, "spreadDeg": 0,   "range": 192, "projectileSpeed": 0,   "homing": false, "blastRadius": 0,   "zoom": 0.2,  "model": "halo_mesh_sniper_rifle",    "fireSound": "halo_snd_sniper_rifle_fire",    "rarity": "epic"},
+    {"id": "plasma_rifle",    "name": "Plasma Rifle",       "kind": "projectile", "damage": 8,   "pellets": 1,  "burst": 1, "fireIntervalTicks": 3,  "auto": true,  "clip": 100,"reserve": 0,   "reloadTicks": 0,  "spreadDeg": 1.5, "range": 48,  "projectileSpeed": 3.0, "homing": false, "blastRadius": 0,   "zoom": 1,    "model": "halo_mesh_plasma_rifle",    "fireSound": "halo_snd_plasma_rifle_fire",    "rarity": "uncommon"},
+    {"id": "needler",         "name": "Needler",            "kind": "projectile", "damage": 7,   "pellets": 1,  "burst": 1, "fireIntervalTicks": 3,  "auto": true,  "clip": 19, "reserve": 57,  "reloadTicks": 50, "spreadDeg": 3,   "range": 40,  "projectileSpeed": 1.6, "homing": true,  "blastRadius": 0,   "zoom": 1,    "model": "halo_mesh_needler",         "fireSound": "halo_snd_needler_fire",         "rarity": "rare"},
+    {"id": "rocket_launcher", "name": "M41 Rocket Launcher","kind": "rocket",     "damage": 200, "pellets": 1,  "burst": 1, "fireIntervalTicks": 20, "auto": false, "clip": 2,  "reserve": 4,   "reloadTicks": 70, "spreadDeg": 0,   "range": 128, "projectileSpeed": 2.2, "homing": false, "blastRadius": 4,   "zoom": 1,    "model": "halo_mesh_rocket_launcher", "fireSound": "halo_snd_rocket_launcher_fire", "rarity": "legendary"},
+    {"id": "frag_grenade",    "name": "M9 Frag Grenade",    "kind": "grenade",    "damage": 120, "pellets": 1,  "burst": 1, "fireIntervalTicks": 20, "auto": false, "clip": 1,  "reserve": 0,   "reloadTicks": 0,  "spreadDeg": 0,   "range": 24,  "projectileSpeed": 1.2, "homing": false, "blastRadius": 3.5, "zoom": 1,    "model": "halo_mesh_frag_grenade",    "fireSound": "halo_snd_grenade_throw",        "rarity": "common"},
+    {"id": "plasma_grenade",  "name": "Plasma Grenade",     "kind": "grenade",    "damage": 120, "pellets": 1,  "burst": 1, "fireIntervalTicks": 20, "auto": false, "clip": 1,  "reserve": 0,   "reloadTicks": 0,  "spreadDeg": 0,   "range": 24,  "projectileSpeed": 1.2, "homing": false, "blastRadius": 3,   "zoom": 1,    "model": "halo_mesh_plasma_grenade",  "fireSound": "halo_snd_grenade_throw",        "rarity": "uncommon"}
+  ]
+}

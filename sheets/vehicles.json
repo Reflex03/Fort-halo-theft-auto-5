@@ -1,0 +1,24 @@
+{
+  "sheet": "vehicles",
+  "doc": "GTA V cars. Model + textures come from the player's own GTA V install. Handling numbers are ours (arcade), in blocks/tick.",
+  "columns": {
+    "id":          {"type": "string", "required": true},
+    "name":        {"type": "string", "required": true},
+    "role":        {"type": "enum", "values": ["civilian", "police"], "required": true},
+    "maxSpeed":    {"type": "number", "required": true},
+    "accel":       {"type": "number", "required": true},
+    "turnDeg":     {"type": "number", "required": true, "doc": "max yaw change per tick at speed"},
+    "health":      {"type": "number", "required": true},
+    "width":       {"type": "number", "required": true, "doc": "hitbox width, blocks"},
+    "height":      {"type": "number", "required": true},
+    "spawnWeight": {"type": "int", "required": true, "doc": "weight among parked cars (0 = never parked)"},
+    "model":       {"type": "ref", "ref": "sources.id", "required": true},
+    "hornSound":   {"type": "ref", "ref": "sources.id", "required": true}
+  },
+  "rows": [
+    {"id": "infernus", "name": "Pegassi Infernus", "role": "civilian", "maxSpeed": 1.6, "accel": 0.035, "turnDeg": 5.5, "health": 60, "width": 2.0, "height": 1.3, "spawnWeight": 2, "model": "gta_mesh_infernus", "hornSound": "gta_snd_horn"},
+    {"id": "sultan",   "name": "Karin Sultan",     "role": "civilian", "maxSpeed": 1.3, "accel": 0.03,  "turnDeg": 5.0, "health": 70, "width": 2.0, "height": 1.5, "spawnWeight": 4, "model": "gta_mesh_sultan",   "hornSound": "gta_snd_horn"},
+    {"id": "blista",   "name": "Dinka Blista",     "role": "civilian", "maxSpeed": 1.1, "accel": 0.028, "turnDeg": 6.0, "health": 50, "width": 1.8, "height": 1.5, "spawnWeight": 5, "model": "gta_mesh_blista",   "hornSound": "gta_snd_horn"},
+    {"id": "police",   "name": "Police Cruiser",   "role": "police",   "maxSpeed": 1.4, "accel": 0.032, "turnDeg": 5.0, "health": 80, "width": 2.0, "height": 1.6, "spawnWeight": 0, "model": "gta_mesh_police",   "hornSound": "gta_snd_siren"}
+  ]
+}
