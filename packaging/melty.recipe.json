@@ -2,33 +2,87 @@
   "schemaVersion": 1,
   "mode": "installed",
   "games": [
-    {"role": "primary", "slug": "minecraft-java"},
-    {"role": "companion", "slug": "halo-mcc"},
-    {"role": "companion", "slug": "gta-v"},
-    {"role": "companion", "slug": "fortnite"}
+    {
+      "role": "primary",
+      "slug": "minecraft-java"
+    },
+    {
+      "role": "companion",
+      "slug": "halo-mcc"
+    },
+    {
+      "role": "companion",
+      "slug": "gta-v"
+    },
+    {
+      "role": "companion",
+      "slug": "fortnite"
+    }
   ],
   "components": [
-    {"id": "main", "kind": "main", "label": "Craft Theft Halo", "fileName": "crafttheft-*.jar", "required": true},
-    {"id": "minecraft", "kind": "extra", "label": "Its Minecraft (Prism Launcher, 1.21.1 with Fabric) and game content reader", "fileName": "CraftTheftHalo-Minecraft-*.zip", "required": true}
+    {
+      "id": "main",
+      "kind": "main",
+      "label": "Craft Theft Halo",
+      "fileName": "crafttheft-*.jar",
+      "required": true
+    },
+    {
+      "id": "minecraft",
+      "kind": "extra",
+      "label": "Its Minecraft (Prism Launcher, 1.21.1 with Fabric) and game content reader",
+      "fileName": "CraftTheftHalo-Minecraft-*.zip",
+      "required": true
+    },
+    {
+      "id": "sources",
+      "kind": "extra",
+      "label": "Source code (GPL/LGPL corresponding source)",
+      "fileName": "CraftTheftHalo-*-sources.zip",
+      "required": false
+    }
   ],
   "requirements": [],
   "mappings": [
-    {"component": "minecraft", "from": "", "to": "{localappdata}/CraftTheftHalo"},
-    {"component": "main", "from": "", "to": "{localappdata}/CraftTheftHalo/Prism/instances/CraftTheftHalo/.minecraft/mods"}
+    {
+      "component": "minecraft",
+      "from": "",
+      "to": "{localappdata}/CraftTheftHalo"
+    },
+    {
+      "component": "main",
+      "from": "",
+      "to": "{localappdata}/CraftTheftHalo/Prism/instances/CraftTheftHalo/.minecraft/mods"
+    }
   ],
   "launch": {
     "kind": "exe",
     "path": "{localappdata}/CraftTheftHalo/Prism/prismlauncher.exe",
-    "args": ["--launch", "CraftTheftHalo"]
+    "args": [
+      "--launch",
+      "CraftTheftHalo"
+    ]
   },
   "setup": {
     "label": "game content",
     "launch": {
       "kind": "exe",
       "path": "{localappdata}/CraftTheftHalo/bin/cthextract.exe",
-      "args": ["--halo", "{game:halo-mcc}", "--gta", "{game:gta-v}", "--fortnite", "{game:fortnite}", "--out", "{localappdata}/CraftTheftHalo/cache"]
+      "args": [
+        "--halo",
+        "{game:halo-mcc}",
+        "--gta",
+        "{game:gta-v}",
+        "--fortnite",
+        "{game:fortnite}",
+        "--out",
+        "{localappdata}/CraftTheftHalo/cache"
+      ]
     },
-    "done": {"file": "{localappdata}/CraftTheftHalo/cache/manifest.json", "contains": "\"cacheSchema\":1"}
+    "done": {
+      "file": "{localappdata}/CraftTheftHalo/cache/manifest.json",
+      "contains": "\"cacheSchema\":1"
+    }
   },
   "settings": [
     {
@@ -42,10 +96,25 @@
       }
     }
   ],
-  "runtimeData": ["{localappdata}/CraftTheftHalo"],
+  "runtimeData": [
+    "{localappdata}/CraftTheftHalo"
+  ],
   "test": {
     "minutes": 10,
-    "checks": ["mod-loads", "cache-ready", "halo-content", "gta-content", "fortnite-content", "bus-ride", "landed", "chest-opened", "weapon-fired", "car-driven", "wanted-stars", "police-chase"]
+    "checks": [
+      "mod-loads",
+      "cache-ready",
+      "halo-content",
+      "gta-content",
+      "fortnite-content",
+      "bus-ride",
+      "landed",
+      "chest-opened",
+      "weapon-fired",
+      "car-driven",
+      "wanted-stars",
+      "police-chase"
+    ]
   },
   "notes": {
     "beforeInstall": "Needs Halo: The Master Chief Collection with Halo 3 installed, GTA V Legacy and Fortnite. The first Play reads their content from your own installs (a few minutes, online). Single player."

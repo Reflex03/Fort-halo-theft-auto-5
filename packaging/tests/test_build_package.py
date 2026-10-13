@@ -629,7 +629,12 @@ class MeltyRecipeTests(unittest.TestCase):
         self.assertEqual(self.comp("main")["kind"], "main")
         self.assertEqual(self.comp("minecraft")["kind"], "extra")
         self.assertTrue(self.comp("minecraft")["required"])
-        self.assertEqual(len(self.r["components"]), 2)
+        # the corresponding-source zip rides along as a never-installed extra (GPL source offer)
+        src = self.comp("sources")
+        self.assertEqual((src["kind"], src["required"]), ("extra", False))
+        self.assertTrue(fnmatch.fnmatchcase("CraftTheftHalo-1.2.3-sources.zip", src["fileName"]))
+        self.assertNotIn("sources", {m["component"] for m in self.r["mappings"]})
+        self.assertEqual(len(self.r["components"]), 3)
 
     def test_paths_match_bundle_layout(self):
         root = "{localappdata}/CraftTheftHalo"

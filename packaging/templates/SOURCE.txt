@@ -6,9 +6,10 @@ Public License (LGPL). You are entitled to their complete corresponding source c
 available from the places below for as long as this release is offered, and for at least three years after.
 The licence texts are in licenses/ (GPL-3.0.txt, GPL-2.0.txt, LGPL-3.0.txt, LGPL-2.1.txt).
 
-All of it in one file (our mirror, uploaded with every release):
+All of it in one file, $sources_zip, published with every release:
 
-    $repo/releases/download/v$version/$sources_zip
+    - on Melty, as this mashup's optional "Source code" download (same release, not installed by Play);
+    - and on GitHub when the release is tagged there: $repo/releases/download/v$version/$sources_zip
 
 It holds every upstream file listed below (folder upstream/, checked against the hashes given here), the source
 of this repository at the commit this release was built from (folder crafttheft/), and a SHA256SUMS file.
