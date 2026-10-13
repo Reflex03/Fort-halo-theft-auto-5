@@ -1,36 +1,190 @@
 {
-  "sheet": "systems",
-  "doc": "Tunable constants of each system, one row per system parameter.",
-  "columns": {
-    "system": {"type": "enum", "values": ["combat", "shield", "battle_bus", "skydive", "chests", "cars", "hud", "extractor"], "required": true},
-    "key":    {"type": "string", "required": true},
-    "value":  {"type": "any", "required": true},
-    "doc":    {"type": "string", "required": true}
+ "sheet": "systems",
+ "doc": "Tunable constants of each system, one row per system parameter.",
+ "columns": {
+  "system": {
+   "type": "enum",
+   "values": [
+    "combat",
+    "shield",
+    "battle_bus",
+    "skydive",
+    "chests",
+    "cars",
+    "hud",
+    "extractor"
+   ],
+   "required": true
   },
-  "rows": [
-    {"system": "combat",     "key": "haloPointToMc",      "value": 0.1739, "doc": "Minecraft damage per Halo damage point (20 MC HP / 115 Halo points of an MP Spartan)"},
-    {"system": "combat",     "key": "fortniteHpToMc",     "value": 0.2,    "doc": "Minecraft HP per Fortnite HP (100 FN HP = 20 MC HP)"},
-    {"system": "shield",     "key": "max",                "value": 100,    "doc": "shield points (Fortnite scale); the Halo energy shield"},
-    {"system": "shield",     "key": "start",              "value": 50,     "doc": "shield on landing"},
-    {"system": "shield",     "key": "pointsPerMcDamage",  "value": 5,      "doc": "shield points one MC damage point removes"},
-    {"system": "shield",     "key": "rechargeDelayTicks", "value": 100,    "doc": "Halo 3: 5 s without damage before recharge"},
-    {"system": "shield",     "key": "rechargePerTick",    "value": 1.0,    "doc": "points per tick while recharging"},
-    {"system": "shield",     "key": "rechargeCap",        "value": 50,     "doc": "natural recharge stops here; Fortnite potions fill the rest"},
-    {"system": "battle_bus", "key": "altitude",           "value": 230,    "doc": "Y the bus flies at"},
-    {"system": "battle_bus", "key": "speed",              "value": 0.55,   "doc": "blocks/tick"},
-    {"system": "battle_bus", "key": "routeLength",        "value": 900,    "doc": "blocks from start to end, centred on world spawn"},
-    {"system": "battle_bus", "key": "autoDropAtEnd",      "value": true,   "doc": "kick the player out at the end of the route"},
-    {"system": "skydive",    "key": "fallSpeed",          "value": 1.2,    "doc": "blocks/tick in free fall"},
-    {"system": "skydive",    "key": "gliderSpeed",        "value": 0.35,   "doc": "blocks/tick falling with glider open"},
-    {"system": "skydive",    "key": "gliderAutoOpenAgl",  "value": 40,     "doc": "glider opens automatically this many blocks above ground"},
-    {"system": "skydive",    "key": "steerSpeed",         "value": 0.6,    "doc": "horizontal blocks/tick while diving"},
-    {"system": "chests",     "key": "count",              "value": 40,     "doc": "loot chests placed around spawn on a new world"},
-    {"system": "chests",     "key": "radius",             "value": 320,    "doc": "blocks around spawn"},
-    {"system": "chests",     "key": "rolls",              "value": 3,      "doc": "entries per chest"},
-    {"system": "cars",       "key": "parkedCount",        "value": 24,     "doc": "cars parked around spawn/villages on a new world"},
-    {"system": "cars",       "key": "radius",             "value": 320,    "doc": "blocks around spawn"},
-    {"system": "hud",        "key": "starsX",             "value": -8,     "doc": "wanted stars right-aligned, px from right edge"},
-    {"system": "hud",        "key": "starsY",             "value": 8,      "doc": "px from top"},
-    {"system": "extractor",  "key": "cacheDir",           "value": "%LOCALAPPDATA%/CraftTheftHalo/cache", "doc": "where game content is unpacked on the player's PC"}
-  ]
+  "key": {
+   "type": "string",
+   "required": true
+  },
+  "value": {
+   "type": "any",
+   "required": true
+  },
+  "doc": {
+   "type": "string",
+   "required": true
+  }
+ },
+ "rows": [
+  {
+   "system": "combat",
+   "key": "haloPointToMc",
+   "value": 0.1739,
+   "doc": "Minecraft damage per Halo damage point (20 MC HP / 115 Halo points of an MP Spartan)"
+  },
+  {
+   "system": "combat",
+   "key": "fortniteHpToMc",
+   "value": 0.2,
+   "doc": "Minecraft HP per Fortnite HP (100 FN HP = 20 MC HP)"
+  },
+  {
+   "system": "shield",
+   "key": "max",
+   "value": 100,
+   "doc": "shield points (Fortnite scale); the Halo energy shield"
+  },
+  {
+   "system": "shield",
+   "key": "start",
+   "value": 50,
+   "doc": "shield on landing"
+  },
+  {
+   "system": "shield",
+   "key": "pointsPerMcDamage",
+   "value": 5,
+   "doc": "shield points one MC damage point removes"
+  },
+  {
+   "system": "shield",
+   "key": "rechargeDelayTicks",
+   "value": 100,
+   "doc": "Halo 3: 5 s without damage before recharge"
+  },
+  {
+   "system": "shield",
+   "key": "rechargePerTick",
+   "value": 1.0,
+   "doc": "points per tick while recharging"
+  },
+  {
+   "system": "shield",
+   "key": "rechargeCap",
+   "value": 50,
+   "doc": "natural recharge stops here; Fortnite potions fill the rest"
+  },
+  {
+   "system": "battle_bus",
+   "key": "altitude",
+   "value": 230,
+   "doc": "Y the bus flies at"
+  },
+  {
+   "system": "battle_bus",
+   "key": "speed",
+   "value": 0.55,
+   "doc": "blocks/tick"
+  },
+  {
+   "system": "battle_bus",
+   "key": "routeLength",
+   "value": 900,
+   "doc": "blocks from start to end, centred on world spawn"
+  },
+  {
+   "system": "battle_bus",
+   "key": "autoDropAtEnd",
+   "value": true,
+   "doc": "kick the player out at the end of the route"
+  },
+  {
+   "system": "skydive",
+   "key": "fallSpeed",
+   "value": 1.2,
+   "doc": "blocks/tick in free fall"
+  },
+  {
+   "system": "skydive",
+   "key": "gliderSpeed",
+   "value": 0.35,
+   "doc": "blocks/tick falling with glider open"
+  },
+  {
+   "system": "skydive",
+   "key": "gliderAutoOpenAgl",
+   "value": 40,
+   "doc": "glider opens automatically this many blocks above ground"
+  },
+  {
+   "system": "skydive",
+   "key": "steerSpeed",
+   "value": 0.6,
+   "doc": "horizontal blocks/tick while diving"
+  },
+  {
+   "system": "chests",
+   "key": "count",
+   "value": 40,
+   "doc": "loot chests placed around spawn on a new world"
+  },
+  {
+   "system": "chests",
+   "key": "radius",
+   "value": 320,
+   "doc": "blocks around spawn"
+  },
+  {
+   "system": "chests",
+   "key": "rolls",
+   "value": 3,
+   "doc": "entries per chest"
+  },
+  {
+   "system": "cars",
+   "key": "parkedCount",
+   "value": 24,
+   "doc": "cars parked around spawn on a new world (villages get extra street cars, see streetChance/maxPerVillage)"
+  },
+  {
+   "system": "cars",
+   "key": "radius",
+   "value": 320,
+   "doc": "blocks around spawn"
+  },
+  {
+   "system": "cars",
+   "key": "streetChance",
+   "value": 0.35,
+   "doc": "chance a village street piece gets a parked car (extra to parkedCount)"
+  },
+  {
+   "system": "cars",
+   "key": "maxPerVillage",
+   "value": 6,
+   "doc": "most extra parked cars per village"
+  },
+  {
+   "system": "hud",
+   "key": "starsX",
+   "value": -8,
+   "doc": "wanted stars right-aligned, px from right edge"
+  },
+  {
+   "system": "hud",
+   "key": "starsY",
+   "value": 8,
+   "doc": "px from top"
+  },
+  {
+   "system": "extractor",
+   "key": "cacheDir",
+   "value": "%LOCALAPPDATA%/CraftTheftHalo/cache",
+   "doc": "where game content is unpacked on the player's PC"
+  }
+ ]
 }

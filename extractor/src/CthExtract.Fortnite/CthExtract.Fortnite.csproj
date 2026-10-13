@@ -1,8 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>CthExtract.Fortnite</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../CthExtract.Core/CthExtract.Core.csproj" />
+    <!-- Apache-2.0, vendored + stripped (no native DLLs, no downloads, no OodleSharp): extractor/vendor/CUE4Parse/VENDORED.md -->
+    <ProjectReference Include="../../vendor/CUE4Parse/CUE4Parse-Conversion/CUE4Parse-Conversion.csproj" />
+    <!-- ISC, C# port of vgmstream's own (reverse-engineered) Bink Audio decoder: extractor/vendor/vgmstream-binka/VENDORED.md -->
+    <ProjectReference Include="../../vendor/vgmstream-binka/VgmstreamBinka.csproj" />
+  </ItemGroup>
+  <!-- C# port of ooz (GPL-3.0-or-later): CthExtract.Oodle.Ooz.Decompress(src, dst). Without it (project missing, or
+       -p:CthNoOodle=true) the module still builds and reports Oodle-compressed containers as Failed. -->
+  <PropertyGroup>
+    <CthWithOodle Condition="Exists('$(MSBuildThisFileDirectory)../CthExtract.Oodle/CthExtract.Oodle.csproj') and '$(CthNoOodle)' != 'true'">true</CthWithOodle>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(CthWithOodle)' == 'true'">
+    <ProjectReference Include="../CthExtract.Oodle/CthExtract.Oodle.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(CthWithOodle)' == 'true'">
+    <DefineConstants>$(DefineConstants);CTH_OODLE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- PCM -> Ogg Vorbis: the shared encoder in CthExtract.Core (OggVorbis.cs) brings OggVorbisEncoder 1.2.2 (MIT;
+         Xiph BSD-3 notice) and NVorbis 0.10.5 (MIT), which also decode-checks every .ogg. -->
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Fortnite.Tests" />
   </ItemGroup>
 </Project>

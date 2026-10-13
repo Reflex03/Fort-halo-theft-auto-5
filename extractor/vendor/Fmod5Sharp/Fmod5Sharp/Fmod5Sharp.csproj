@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Vendored from https://github.com/SamboyCoding/Fmod5Sharp @ 28951c6 (MIT). See ../VENDORED.md for the changes. -->
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Authors>Sam Byass (Samboy063)</Authors>
+        <Description>Decoder for FMOD 5 sound banks (FSB files)</Description>
+        <IsTrimmable>true</IsTrimmable>
+        <LangVersion>11</LangVersion>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Fmod5Sharp</AssemblyName>
+        <RootNamespace>Fmod5Sharp</RootNamespace>
+        <TargetFramework>net10.0</TargetFramework>
+        <Title>FMOD5 Sharp</Title>
+        <Version>3.1.0</Version>
+        <InformationalVersion>3.1.0+28951c6-cthextract.1</InformationalVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NAudio.Core" Version="2.3.0" />
+        <PackageReference Include="OggVorbisEncoder" Version="1.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Util\vorbis_headers_converted.json" LogicalName="Fmod5Sharp.Util.vorbis_headers_converted.json" />
+    </ItemGroup>
+
+</Project>

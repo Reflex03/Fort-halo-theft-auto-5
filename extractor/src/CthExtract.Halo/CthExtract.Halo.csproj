@@ -1,8 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>CthExtract.Halo</RootNamespace>
+    <!-- Reclaimer's Scene API has no nullable annotations; keep our own code nullable-clean. -->
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../CthExtract.Core/CthExtract.Core.csproj" />
+    <!-- GPL-3.0, vendored + patched (net10.0, no WPF, read-only shared opens): extractor/vendor/Reclaimer/VENDORED.md -->
+    <ProjectReference Include="../../vendor/Reclaimer/Reclaimer.Blam/Reclaimer.Blam.csproj" />
+    <!-- MIT, vendored + patched (lazy per-sample reads): extractor/vendor/Fmod5Sharp/VENDORED.md -->
+    <ProjectReference Include="../../vendor/Fmod5Sharp/Fmod5Sharp/Fmod5Sharp.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- MIT: decodes every rebuilt Ogg once as a sanity check before it goes into the pack -->
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Halo.Tests" />
   </ItemGroup>
 </Project>

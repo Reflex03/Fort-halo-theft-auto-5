@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- cant use MSBuildProjectName because it can end up being something like "ProjectName_tmp" under certain build conditions -->
+        <ProjectName>$([System.IO.Path]::GetFileName($(MSBuildProjectDirectory)))</ProjectName>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>13</LangVersion>
+        <Nullable>disable</Nullable>
+        <SignAssembly>false</SignAssembly>
+        <Authors>Gravemind2401</Authors>
+        <AssemblyVersion>5.0.0.0</AssemblyVersion>
+        <FileVersion>$(AssemblyVersion)</FileVersion>
+        <Version>$(VersionPrefix)$(AssemblyVersion)</Version>
+        <Copyright>Copyright © $(Authors) 2018 - $([System.DateTime]::Now.Year)</Copyright>
+        <RootNamespace>$(ProjectName.Split(".")[0])</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>$(NoWarn);CA1416;CS0618;CS0162;SYSLIB1054;IDE0130</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Reclaimer.Core\Reclaimer.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Remove="System.IO" />
+        <Using Remove="System.Net.Http" />
+        <Using Include="System.Diagnostics.DebuggerDisplayAttribute">
+            <Alias>DebuggerDisplayAttribute</Alias>
+        </Using>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>Reclaimer.Blam.Properties</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

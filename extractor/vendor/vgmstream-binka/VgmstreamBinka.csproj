@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- C# port of vgmstream's own (reverse-engineered) Bink Audio decoder (ISC, see LICENSE and VENDORED.md). -->
+  <PropertyGroup>
+    <RootNamespace>VgmstreamBinka</RootNamespace>
+    <AssemblyName>VgmstreamBinka</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <!-- keep plain IEEE single-precision math: no FMA contraction, same results as the C decoder -->
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="tools/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Fortnite.Tests" />
+  </ItemGroup>
+</Project>

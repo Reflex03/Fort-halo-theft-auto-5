@@ -1,0 +1,541 @@
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/CodecRebuilders/FmodPcmRebuilder.cs b/Fmod5Sharp/CodecRebuilders/FmodPcmRebuilder.cs
+--- a/Fmod5Sharp/CodecRebuilders/FmodPcmRebuilder.cs
++++ b/Fmod5Sharp/CodecRebuilders/FmodPcmRebuilder.cs
+@@ -1,4 +1,5 @@
+-﻿using Fmod5Sharp.FmodTypes;
++﻿using System;
++using Fmod5Sharp.FmodTypes;
+ using NAudio.Wave;
+ using System.IO;
+ 
+@@ -26,11 +27,15 @@
+                 width * 8
+             );
+             using var stream = new MemoryStream();
+-            using var writer = new WaveFileWriter(stream, format);
+-            
+-            writer.Write(sample.SampleBytes, 0, numChannels * width * (int) sample.Metadata.SampleCount);
++            // CthExtract patch: finish the WAV (RIFF/data sizes) before taking the bytes, and return only the used
++            // part of the buffer (upstream returned GetBuffer() while the writer was still open).
++            using (var writer = new WaveFileWriter(new NAudio.Utils.IgnoreDisposeStream(stream), format))
++            {
++                var bytes = sample.SampleBytes;
++                writer.Write(bytes, 0, Math.Min(bytes.Length, numChannels * width * (int) sample.Metadata.SampleCount));
++            }
+ 
+-            return stream.GetBuffer();
++            return stream.ToArray();
+         }
+     }
+ }
+\ No newline at end of file
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/CodecRebuilders/FmodVorbisRebuilder.cs b/Fmod5Sharp/CodecRebuilders/FmodVorbisRebuilder.cs
+--- a/Fmod5Sharp/CodecRebuilders/FmodVorbisRebuilder.cs
++++ b/Fmod5Sharp/CodecRebuilders/FmodVorbisRebuilder.cs
+@@ -13,16 +13,65 @@
+ {
+     public static class FmodVorbisRebuilder
+     {
+-        private static Dictionary<uint, FmodVorbisData>? headers;
++        // CthExtract patch: concurrent dictionary, loaded once under a lock (upstream: plain Dictionary, racy first load)
++        private static System.Collections.Concurrent.ConcurrentDictionary<uint, FmodVorbisData>? headers;
++        private static readonly object HeadersLock = new();
+ 
+         private static void LoadVorbisHeaders()
+         {
++            lock (HeadersLock)
++            {
++                if (headers == null)
++                    headers = new(LoadVorbisHeadersCore()!);
++            }
++        }
++
++        private static Dictionary<uint, FmodVorbisData>? LoadVorbisHeadersCore()
++        {
+             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"Fmod5Sharp.Util.vorbis_headers_converted.json")
+                                ?? throw new Exception($"Embedded resources for vorbis header data not found, has the assembly been tampered with?");
+             using StreamReader reader = new(stream);
+ 
+             var jsonString = reader.ReadToEnd();
+-            headers = JsonSerializer.Deserialize(jsonString, Fmod5SharpJsonContext.Default.DictionaryUInt32FmodVorbisData);
++            return JsonSerializer.Deserialize(jsonString, Fmod5SharpJsonContext.Default.DictionaryUInt32FmodVorbisData);
++        }
++
++        /// <summary>CthExtract patch: the crc32 of the Vorbis setup header a sample needs, or null when it has no VORBISDATA chunk.</summary>
++        public static uint? GetSetupHeaderCrc(FmodSample sample)
++        {
++            var dataChunk = sample.Metadata.Chunks.FirstOrDefault(f => f.ChunkType == FmodSampleChunkType.VORBISDATA);
++            return dataChunk?.ChunkData is VorbisChunkData v ? v.Crc32 : null;
++        }
++
++        /// <summary>CthExtract patch: true when the embedded table holds the setup header with this crc32.</summary>
++        public static bool HasSetupHeader(uint crc32)
++        {
++            if (headers == null)
++                LoadVorbisHeaders();
++            return headers!.ContainsKey(crc32);
++        }
++
++        /// <summary>
++        /// CthExtract patch: add a setup header found elsewhere (e.g. in the player's own FMOD binary) for this run.
++        /// The caller has checked that crc32(<paramref name="headerBytes"/>) == <paramref name="crc32"/> and found the
++        /// bit offset of the mode count (<paramref name="seekBit"/>).
++        /// </summary>
++        public static void RegisterSetupHeader(uint crc32, byte[] headerBytes, int seekBit)
++        {
++            if (headers == null)
++                LoadVorbisHeaders();
++            headers![crc32] = new FmodVorbisData(headerBytes, seekBit);
++        }
++
++        /// <summary>CthExtract patch: number of setup headers in the embedded table.</summary>
++        public static int SetupHeaderCount
++        {
++            get
++            {
++                if (headers == null)
++                    LoadVorbisHeaders();
++                return headers!.Count;
++            }
+         }
+ 
+         public static byte[] RebuildOggFile(FmodSample sample)
+@@ -42,7 +91,9 @@
+             //Ok, we have the crc32, now we need to find the header data.
+             if (headers == null)
+                 LoadVorbisHeaders();
+-            var vorbisData = headers![crc32];
++            // CthExtract patch: name the missing setup header instead of a bare KeyNotFoundException.
++            if (!headers!.TryGetValue(crc32, out var vorbisData))
++                throw new KeyNotFoundException($"Vorbis setup header with crc32 0x{crc32:x8} is not in the lookup table ({headers.Count} entries); sample '{sample.Name}' cannot be rebuilt");
+             
+             vorbisData.InitBlockFlags();
+             
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/Fmod5Sharp.csproj b/Fmod5Sharp/Fmod5Sharp.csproj
+--- a/Fmod5Sharp/Fmod5Sharp.csproj
++++ b/Fmod5Sharp/Fmod5Sharp.csproj
+@@ -1,41 +1,29 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+ 
++    <!-- Vendored from https://github.com/SamboyCoding/Fmod5Sharp @ 28951c6 (MIT). See ../VENDORED.md for the changes. -->
+     <PropertyGroup>
+         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+         <Authors>Sam Byass (Samboy063)</Authors>
+-        <Configurations>Release;Debug</Configurations>
+-        <DebugType>embedded</DebugType>
+         <Description>Decoder for FMOD 5 sound banks (FSB files)</Description>
+-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+         <IsTrimmable>true</IsTrimmable>
+         <LangVersion>11</LangVersion>
+         <Nullable>enable</Nullable>
+-        <PackageId>Fmod5Sharp</PackageId>
+-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+-        <PackageProjectUrl>https://github.com/SamboyCoding/Fmod5Sharp</PackageProjectUrl>
+-        <PackageTags>fmod;audio</PackageTags>
+-        <Platforms>x86;x64;AnyCPU</Platforms>
+-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+-        <RepositoryType>git</RepositoryType>
+-        <RepositoryUrl>https://github.com/SamboyCoding/Fmod5Sharp.git</RepositoryUrl>
+-        <TargetFrameworks>net8.0;net9.0;net10.0;netstandard2.0;netstandard2.1</TargetFrameworks>
++        <AssemblyName>Fmod5Sharp</AssemblyName>
++        <RootNamespace>Fmod5Sharp</RootNamespace>
++        <TargetFramework>net10.0</TargetFramework>
+         <Title>FMOD5 Sharp</Title>
+         <Version>3.1.0</Version>
+-        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
++        <InformationalVersion>3.1.0+28951c6-cthextract.1</InformationalVersion>
++        <IsPackable>false</IsPackable>
+     </PropertyGroup>
+ 
+     <ItemGroup>
+-        <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.5" />
+-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
+         <PackageReference Include="NAudio.Core" Version="2.3.0" />
+         <PackageReference Include="OggVorbisEncoder" Version="1.2.2" />
+-        <PackageReference Include="System.Text.Json" Version="10.0.5" />
+     </ItemGroup>
+ 
+     <ItemGroup>
+-        <None Remove="FmodVorbis\vorbis_headers_converted.json"/>
+-        <EmbeddedResource Include="Util\vorbis_headers_converted.json"/>
++        <EmbeddedResource Include="Util\vorbis_headers_converted.json" LogicalName="Fmod5Sharp.Util.vorbis_headers_converted.json" />
+     </ItemGroup>
+ 
+ </Project>
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/FmodTypes/FmodSample.cs b/Fmod5Sharp/FmodTypes/FmodSample.cs
+--- a/Fmod5Sharp/FmodTypes/FmodSample.cs
++++ b/Fmod5Sharp/FmodTypes/FmodSample.cs
+@@ -1,4 +1,5 @@
+-﻿using System.Diagnostics.CodeAnalysis;
++﻿using System;
++using System.Diagnostics.CodeAnalysis;
+ using Fmod5Sharp.CodecRebuilders;
+ 
+ namespace Fmod5Sharp.FmodTypes
+@@ -6,14 +7,45 @@
+     public class FmodSample
+     {
+         public FmodSampleMetadata Metadata;
+-        public byte[] SampleBytes;
+         public string? Name;
+         internal FmodSoundBank? MyBank;
+ 
++        // CthExtract patch: sample bytes are either held (upstream behaviour) or read on demand from the bank's
++        // stream (FsbLoader.LoadFsbFromStreamLazy), so a multi-hundred-MB bank costs only its headers in memory.
++        private byte[]? sampleBytes;
++        private readonly Func<byte[]>? loader;
++
++        /// <summary>The sample's encoded bytes. For a lazily loaded bank this reads them from the bank's stream on
++        /// every access (nothing is cached); call once and keep the array if you need it twice.</summary>
++        public byte[] SampleBytes
++        {
++            get => sampleBytes ?? loader?.Invoke() ?? Array.Empty<byte>();
++            set => sampleBytes = value;
++        }
++
++        /// <summary>Absolute offset of the sample data in the bank stream (CthExtract patch; -1 if unknown).</summary>
++        public long DataOffset { get; internal set; } = -1;
++
++        /// <summary>Length in bytes of the sample data in the bank (CthExtract patch).</summary>
++        public int DataLength { get; internal set; }
++
++        /// <summary>True when <see cref="SampleBytes"/> is read from the bank stream on demand (CthExtract patch).</summary>
++        public bool IsLazy => sampleBytes == null && loader != null;
++
+         public FmodSample(FmodSampleMetadata metadata, byte[] sampleBytes)
+         {
+             Metadata = metadata;
+-            SampleBytes = sampleBytes;
++            this.sampleBytes = sampleBytes;
++            DataLength = sampleBytes.Length;
++        }
++
++        /// <summary>A sample whose bytes are read by <paramref name="loader"/> when needed (CthExtract patch).</summary>
++        public FmodSample(FmodSampleMetadata metadata, Func<byte[]> loader, long dataOffset, int dataLength)
++        {
++            Metadata = metadata;
++            this.loader = loader;
++            DataOffset = dataOffset;
++            DataLength = dataLength;
+         }
+ 
+ #if NET6_0_OR_GREATER
+@@ -53,4 +85,4 @@
+             }
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/FmodTypes/FmodSoundBank.cs b/Fmod5Sharp/FmodTypes/FmodSoundBank.cs
+--- a/Fmod5Sharp/FmodTypes/FmodSoundBank.cs
++++ b/Fmod5Sharp/FmodTypes/FmodSoundBank.cs
+@@ -1,17 +1,29 @@
+-﻿using System.Collections.Generic;
++﻿using System;
++using System.Collections.Generic;
+ 
+ namespace Fmod5Sharp.FmodTypes
+ {
+-    public class FmodSoundBank
++    public class FmodSoundBank : IDisposable
+     {
+         public FmodAudioHeader Header;
+         public List<FmodSample> Samples;
+ 
+-        internal FmodSoundBank(FmodAudioHeader header, List<FmodSample> samples)
++        // CthExtract patch: a lazily loaded bank owns the stream its samples read from.
++        private IDisposable? owner;
++
++        internal FmodSoundBank(FmodAudioHeader header, List<FmodSample> samples, IDisposable? owner = null)
+         {
+             Header = header;
+             Samples = samples;
++            this.owner = owner;
+             Samples.ForEach(s => s.MyBank = this);
+         }
++
++        /// <summary>Releases the stream of a lazily loaded bank (no-op for banks held in memory). CthExtract patch.</summary>
++        public void Dispose()
++        {
++            owner?.Dispose();
++            owner = null;
++        }
+     }
+-}
+\ No newline at end of file
++}
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/FsbLoader.cs b/Fmod5Sharp/FsbLoader.cs
+--- a/Fmod5Sharp/FsbLoader.cs
++++ b/Fmod5Sharp/FsbLoader.cs
+@@ -1,5 +1,7 @@
+-﻿using System.Collections.Generic;
++﻿using System;
++using System.Collections.Generic;
+ using System.IO;
++using System.Text;
+ using Fmod5Sharp.FmodTypes;
+ using Fmod5Sharp.Util;
+ 
+@@ -21,62 +23,111 @@
+             { 9, 48_000 },
+             { 10, 96_000 },
+         };
+-        
+-        private static FmodSoundBank? LoadInternal(Stream stream, bool throwIfError)
+-        {
+-            using BinaryReader reader = new(stream);
+-
+-            FmodAudioHeader header = new(reader);
+ 
+-            if (!header.IsValid)
++        private static FmodSoundBank? LoadInternal(Stream stream, bool throwIfError, bool lazy = false, bool leaveOpen = false)
++        {
++            // CthExtract patch: the lazy path keeps the stream open and gives every sample a loader instead of its bytes.
++            BinaryReader reader = new(stream, Encoding.UTF8, leaveOpen: true);
++            var ownsStream = !leaveOpen;
++            try
+             {
+-                if (throwIfError)
+-                    throw new("File is probably not an FSB file (magic number mismatch)");
++                FmodAudioHeader header = new(reader);
+ 
+-                return null;
+-            }
+-
+-            long dataStartOffset = header.SizeOfThisHeader + header.SizeOfNameTable + header.SizeOfSampleHeaders;
++                if (!header.IsValid)
++                {
++                    if (throwIfError)
++                        throw new("File is probably not an FSB file (magic number mismatch)");
+ 
+-            List<FmodSample> samples = new(header.Samples.Count);
+-            for (var i = 0; i < header.Samples.Count; i++)
+-            {
+-                var sampleMetadata = header.Samples[i];
++                    return null;
++                }
+ 
+-                var firstByteOfSample = (long)sampleMetadata.DataOffset;
+-                var lastByteOfSample = (long)header.SizeOfData;
++                long dataStartOffset = header.SizeOfThisHeader + header.SizeOfNameTable + header.SizeOfSampleHeaders;
+ 
+-                if (i < header.Samples.Count - 1)
++                // CthExtract patch: refuse banks whose declared sizes run past the end of the stream instead of
++                // reading garbage (a truncated download or a half-written game update).
++                if (stream.CanSeek && dataStartOffset + header.SizeOfData > stream.Length)
+                 {
+-                    lastByteOfSample = header.Samples[i + 1].DataOffset;
++                    if (throwIfError)
++                        throw new InvalidDataException($"FSB5 bank is truncated: header says {dataStartOffset + header.SizeOfData} bytes, stream has {stream.Length}");
++                    return null;
+                 }
+ 
+-                var sampleData = new byte[lastByteOfSample - firstByteOfSample];
+-                stream.Position = dataStartOffset + firstByteOfSample;
+-#if NET8_0_OR_GREATER
+-                stream.ReadExactly(sampleData, 0, sampleData.Length);
+-#else 
+-                stream.Read(sampleData, 0, sampleData.Length);
+-#endif
++                // CthExtract patch: read the whole name table once instead of one seek per sample.
++                byte[]? nameTable = null;
++                if (header.SizeOfNameTable > 0)
++                {
++                    stream.Position = header.SizeOfThisHeader + header.SizeOfSampleHeaders;
++                    nameTable = new byte[header.SizeOfNameTable];
++                    stream.ReadExactly(nameTable, 0, nameTable.Length);
++                }
+ 
+-                var sample = new FmodSample(sampleMetadata, sampleData);
++                var source = lazy ? new SampleSource(stream, ownsStream) : null;
+ 
+-                if (header.SizeOfNameTable > 0)
++                List<FmodSample> samples = new(header.Samples.Count);
++                for (var i = 0; i < header.Samples.Count; i++)
+                 {
+-                    var nameOffsetOffset = header.SizeOfThisHeader + header.SizeOfSampleHeaders + 4 * i;
+-                    reader.BaseStream.Position = nameOffsetOffset;
+-                    var nameOffset = reader.ReadUInt32();
++                    var sampleMetadata = header.Samples[i];
++
++                    var firstByteOfSample = (long)sampleMetadata.DataOffset;
++                    var lastByteOfSample = (long)header.SizeOfData;
+ 
+-                    nameOffset += header.SizeOfThisHeader + header.SizeOfSampleHeaders;
++                    if (i < header.Samples.Count - 1)
++                    {
++                        lastByteOfSample = header.Samples[i + 1].DataOffset;
++                    }
++
++                    if (lastByteOfSample < firstByteOfSample || lastByteOfSample > header.SizeOfData)
++                    {
++                        if (throwIfError)
++                            throw new InvalidDataException($"FSB5 sample {i} has a bad data range {firstByteOfSample}..{lastByteOfSample} (data size {header.SizeOfData})");
++                        return null;
++                    }
++
++                    var absolute = dataStartOffset + firstByteOfSample;
++                    var length = checked((int)(lastByteOfSample - firstByteOfSample));
++
++                    FmodSample sample;
++                    if (source != null)
++                    {
++                        sample = new FmodSample(sampleMetadata, () => source.Read(absolute, length), absolute, length);
++                    }
++                    else
++                    {
++                        var sampleData = new byte[length];
++                        stream.Position = absolute;
++                        stream.ReadExactly(sampleData, 0, sampleData.Length);
++                        sample = new FmodSample(sampleMetadata, sampleData) { DataOffset = absolute };
++                    }
++
++                    if (nameTable != null)
++                    {
++                        var nameOffsetOffset = 4 * i;
++                        if (nameOffsetOffset + 4 <= nameTable.Length)
++                        {
++                            var nameOffset = BitConverter.ToUInt32(nameTable, nameOffsetOffset);
++                            if (nameOffset < nameTable.Length)
++                            {
++                                var end = Array.IndexOf(nameTable, (byte)0, (int)nameOffset);
++                                if (end < 0) end = nameTable.Length;
++                                sample.Name = Encoding.UTF8.GetString(nameTable, (int)nameOffset, end - (int)nameOffset);
++                            }
++                        }
++                    }
+ 
+-                    stream.Position = nameOffset;
+-                    sample.Name = stream.ReadNullTerminatedString();
++                    samples.Add(sample);
+                 }
+ 
+-                samples.Add(sample);
+-            }
++                if (source != null)
++                    ownsStream = false; // the bank owns it now
+ 
+-            return new FmodSoundBank(header, samples);
++                return new FmodSoundBank(header, samples, source);
++            }
++            finally
++            {
++                reader.Dispose();
++                if (ownsStream)
++                    stream.Dispose();
++            }
+         }
+ 
+         public static bool TryLoadFsbFromStream(Stream stream, out FmodSoundBank? bank)
+@@ -100,5 +151,73 @@
+             using var stream = new MemoryStream(bankBytes);
+             return LoadInternal(stream, true)!;
+         }
++
++        /// <summary>
++        /// CthExtract patch: parse only the headers and the name table; each sample reads its bytes from
++        /// <paramref name="stream"/> when <see cref="FmodSample.SampleBytes"/> is used. The stream must be seekable.
++        /// Dispose the bank to release the stream (unless <paramref name="leaveOpen"/>).
++        /// </summary>
++        public static FmodSoundBank LoadFsbFromStreamLazy(Stream stream, bool leaveOpen = false)
++        {
++            if (!stream.CanSeek)
++                throw new ArgumentException("lazy FSB loading needs a seekable stream", nameof(stream));
++            return LoadInternal(stream, true, lazy: true, leaveOpen: leaveOpen)!;
++        }
++
++        /// <summary>
++        /// CthExtract patch: open an FSB5 file read-only (sharing read/write/delete with other processes, so a running
++        /// game or an update is never blocked) and load it lazily.
++        /// </summary>
++        public static FmodSoundBank LoadFsbFromFileLazy(string path)
++        {
++            var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 1 << 16, FileOptions.RandomAccess);
++            try
++            {
++                return LoadFsbFromStreamLazy(fs);
++            }
++            catch
++            {
++                fs.Dispose();
++                throw;
++            }
++        }
++
++        /// <summary>Reads sample byte ranges from a shared stream (CthExtract patch).</summary>
++        private sealed class SampleSource : IDisposable
++        {
++            private readonly Stream stream;
++            private readonly bool owns;
++            private readonly object gate = new();
++            private bool disposed;
++
++            public SampleSource(Stream stream, bool owns)
++            {
++                this.stream = stream;
++                this.owns = owns;
++            }
++
++            public byte[] Read(long offset, int length)
++            {
++                lock (gate)
++                {
++                    if (disposed)
++                        throw new ObjectDisposedException(nameof(FmodSoundBank), "the FSB bank was disposed");
++                    var data = new byte[length];
++                    stream.Position = offset;
++                    stream.ReadExactly(data, 0, length);
++                    return data;
++                }
++            }
++
++            public void Dispose()
++            {
++                lock (gate)
++                {
++                    if (disposed) return;
++                    disposed = true;
++                    if (owns) stream.Dispose();
++                }
++            }
++        }
+     }
+-}
+\ No newline at end of file
++}
+diff -ruN --strip-trailing-cr -x vorbis_headers_converted.json a/Fmod5Sharp/Util/FmodVorbisData.cs b/Fmod5Sharp/Util/FmodVorbisData.cs
+--- a/Fmod5Sharp/Util/FmodVorbisData.cs
++++ b/Fmod5Sharp/Util/FmodVorbisData.cs
+@@ -22,15 +22,27 @@
+ 
+     [JsonIgnore] private byte[] BlockFlags { get; set; } = Array.Empty<byte>();
+     
+-    private bool _initialized;
++    private volatile bool _initialized;
++    private readonly object _initLock = new();
+ 
+     internal void InitBlockFlags()
+     {
++        // CthExtract patch: thread-safe. Upstream set _initialized before computing the flags, so a second thread
++        // rebuilding a sample with the same setup header could read empty flags and fail.
+         if(_initialized)
+             return;
+ 
+-        _initialized = true;
+-        
++        lock (_initLock)
++        {
++            if (_initialized)
++                return;
++            InitBlockFlagsCore();
++            _initialized = true;
++        }
++    }
++
++    private void InitBlockFlagsCore()
++    {
+         var bitStream = new BitStream(HeaderBytes);
+ 
+         if (bitStream.ReadByte() != 5) //packing type 5 == books

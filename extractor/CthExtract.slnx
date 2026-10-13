@@ -1,8 +1,27 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/CthExtract/CthExtract.csproj" />
     <Project Path="src/CthExtract.Core/CthExtract.Core.csproj" />
     <Project Path="src/CthExtract.Fortnite/CthExtract.Fortnite.csproj" />
     <Project Path="src/CthExtract.Gta/CthExtract.Gta.csproj" />
     <Project Path="src/CthExtract.Halo/CthExtract.Halo.csproj" />
+    <Project Path="src/CthExtract.Oodle/CthExtract.Oodle.csproj" />
+  </Folder>
+  <Folder Name="/vendor/">
+    <Project Path="vendor/CUE4Parse/CUE4Parse/CUE4Parse.csproj" />
+    <Project Path="vendor/CUE4Parse/CUE4Parse-Conversion/CUE4Parse-Conversion.csproj" />
+    <Project Path="vendor/Fmod5Sharp/Fmod5Sharp/Fmod5Sharp.csproj" />
+    <Project Path="vendor/MeshDecimator/MeshDecimator.csproj" />
+    <Project Path="vendor/Reclaimer/Reclaimer.Blam/Reclaimer.Blam.csproj" />
+    <Project Path="vendor/Reclaimer/Reclaimer.Core/Reclaimer.Core.csproj" />
+    <Project Path="vendor/vgmstream-binka/VgmstreamBinka.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CthExtract.Cli.Tests/CthExtract.Cli.Tests.csproj" />
+    <Project Path="tests/CthExtract.E2E/CthExtract.E2E.csproj" />
+    <Project Path="tests/CthExtract.Fortnite.Tests/CthExtract.Fortnite.Tests.csproj" />
+    <Project Path="tests/CthExtract.Gta.Tests/CthExtract.Gta.Tests.csproj" />
+    <Project Path="tests/CthExtract.Halo.Tests/CthExtract.Halo.Tests.csproj" />
+    <Project Path="tests/CthExtract.Oodle.Tests/CthExtract.Oodle.Tests.csproj" />
   </Folder>
 </Solution>

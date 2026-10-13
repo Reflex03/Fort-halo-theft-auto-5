@@ -25,12 +25,25 @@ public sealed class ExtractContext
     public string WorkDir { get; }
     public Log Log { get; }
 
-    /// <summary>Called with (done, total, message) as rows complete; written to progress.json by the caller.</summary>
+    /// <summary>The cache root (the folder holding manifest.json, packs/, stats/), for module-private files that must
+    /// outlive one run, such as cache/keys. The extractor sets it; when constructed without it, it is the parent of
+    /// StatsDir if that folder is named "stats", else WorkDir.</summary>
+    public string CacheDir { get; init; }
+
+    /// <summary>Called with a short message as rows complete or a module reports a step; the extractor turns it into
+    /// progress.json (done/total = rows reported so far / rows of this game).</summary>
     public Action<string>? Progress { get; set; }
+
+    /// <summary>Called after every row result is recorded (Ok / Missing / Failed), on the reporting thread. The extractor
+    /// streams these to its supervisor so results survive a crash later in the module.</summary>
+    public Action<AssetResult>? ResultRecorded { get; set; }
 
     public ExtractContext(string game, string shortName, string packDir, string statsDir, string workDir, Log log)
     {
         Game = game; Short = shortName; PackDir = packDir; StatsDir = statsDir; WorkDir = workDir; Log = log;
+        var stats = Path.GetFullPath(statsDir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        CacheDir = string.Equals(Path.GetFileName(stats), "stats", StringComparison.OrdinalIgnoreCase)
+            ? Path.GetDirectoryName(stats)! : workDir;
         Directory.CreateDirectory(AssetsDir);
         Directory.CreateDirectory(StatsDir);
         Directory.CreateDirectory(WorkDir);
@@ -49,6 +62,7 @@ public sealed class ExtractContext
     {
         lock (_lock) _results[r.Id] = r;
         Log.Info($"[{Short}] {r.Id}: {r.Status}{(r.Detail is null ? "" : " - " + r.Detail)}");
+        ResultRecorded?.Invoke(r);
         Progress?.Invoke($"{r.Id}: {r.Status}");
     }
 
@@ -59,11 +73,17 @@ public sealed class ExtractContext
         var row = Row(id);
         if (mesh.TriangleCount == 0) { Failed(id, "mesh has no triangles"); return; }
         int before = mesh.TriangleCount;
-        if (row.MaxTris > 0 && before > row.MaxTris) mesh = Decimate.ToBudget(mesh, row.MaxTris);
+        string how = "";
+        if (row.MaxTris > 0 && before > row.MaxTris)
+        {
+            mesh = Decimate.ToBudget(mesh, row.MaxTris, out var method);
+            how = ", " + method;
+            if (mesh.TriangleCount == 0) { Failed(id, $"decimation to {row.MaxTris} left no triangles (from {before})"); return; }
+        }
         Validate.Mesh(mesh);
         var path = Path.Combine(AssetsDir, row.Out);
         Cthm.Write(path, mesh);
-        Record(new AssetResult(id, AssetStatus.Ok, $"{mesh.TriangleCount} tris (from {before}){(detail is null ? "" : "; " + detail)}", row.Out));
+        Record(new AssetResult(id, AssetStatus.Ok, $"{mesh.TriangleCount} tris (from {before}{how}){(detail is null ? "" : "; " + detail)}", row.Out));
     }
 
     /// <summary>Write a texture used by a mesh material ("halo/assault_rifle/0" → textures/halo/assault_rifle/0.png).
@@ -93,16 +113,28 @@ public sealed class ExtractContext
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllBytes(path, oggVorbis);
         var ev = SoundEvent(row);
-        var soundName = $"{Namespace}:{Path.ChangeExtension(row.Out, null)!.Replace('\\', '/').Substring("sounds/".Length)}";
-        lock (_lock)
-        {
-            _sounds[ev] = new JsonObject
-            {
-                ["replace"] = true,
-                ["sounds"] = new JsonArray(new JsonObject { ["name"] = soundName, ["stream"] = false })
-            };
-        }
+        lock (_lock) _sounds[ev] = SoundJson(row);
         Record(new AssetResult(id, AssetStatus.Ok, $"{oggVorbis.Length} bytes{(detail is null ? "" : "; " + detail)}", row.Out));
+    }
+
+    /// <summary>The sounds.json entry for a sound row: replaces the jar's placeholder event with the extracted file.</summary>
+    public static JsonObject SoundJson(SourceRow row)
+    {
+        var soundName = $"{Namespace}:{Path.ChangeExtension(row.Out, null)!.Replace('\\', '/').Substring("sounds/".Length)}";
+        return new JsonObject
+        {
+            ["replace"] = true,
+            ["sounds"] = new JsonArray(new JsonObject { ["name"] = soundName, ["stream"] = false })
+        };
+    }
+
+    /// <summary>Write a pack's pack.mcmeta (pack_format 34 = Minecraft 1.21.1).</summary>
+    public static void WritePackMeta(string packDir, string shortName)
+    {
+        Directory.CreateDirectory(packDir);
+        File.WriteAllText(Path.Combine(packDir, "pack.mcmeta"),
+            "{\"pack\":{\"pack_format\":34,\"description\":\"Craft Theft Halo: content read from your own " + shortName + " install\"}}",
+            new UTF8Encoding(false));
     }
 
     /// <summary>Sound event name (without namespace) for a sound row: "halo.assault_rifle_fire".</summary>
@@ -139,10 +171,7 @@ public sealed class ExtractContext
                 if (!_results.ContainsKey(r.Id))
                     _results[r.Id] = new AssetResult(r.Id, AssetStatus.Unimplemented, "not reported by the module", null);
 
-        Directory.CreateDirectory(PackDir);
-        File.WriteAllText(Path.Combine(PackDir, "pack.mcmeta"),
-            "{\"pack\":{\"pack_format\":34,\"description\":\"Craft Theft Halo: content read from your own " + Short + " install\"}}",
-            new UTF8Encoding(false));
+        WritePackMeta(PackDir, Short);
         lock (_lock)
         {
             if (_sounds.Count > 0)

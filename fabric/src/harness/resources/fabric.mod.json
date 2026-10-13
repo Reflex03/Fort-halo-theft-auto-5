@@ -1,0 +1,16 @@
+{
+	"schemaVersion": 1,
+	"id": "crafttheft_harness",
+	"version": "${version}",
+	"name": "Craft Theft Halo test harness",
+	"description": "Scripted end-to-end scenario for the crafttheft mod (dev and production-style test runs only; never shipped). Active only with -Dcrafttheft.harness=<mode>.",
+	"license": "CC-BY-NC-SA-4.0",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["dev.crafttheft.harness.Harness"]
+	},
+	"depends": {
+		"crafttheft": "*",
+		"fabric-api": "*"
+	}
+}

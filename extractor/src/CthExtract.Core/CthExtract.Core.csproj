@@ -4,5 +4,16 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.IO.Hashing" Version="10.0.0" />
+    <!-- OggVorbis.cs, the shared PCM -> Ogg Vorbis encoder: OggVorbisEncoder (MIT; C# port of libvorbis, Xiph.Org BSD-3
+         notice applies) and NVorbis (MIT) to decode-verify every result. Same versions the modules already used. -->
+    <PackageReference Include="OggVorbisEncoder" Version="1.2.2" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- MIT, vendored unmodified (quadric edge collapse for Decimate.ToBudget): extractor/vendor/MeshDecimator/VENDORED.md -->
+    <ProjectReference Include="../../vendor/MeshDecimator/MeshDecimator.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Cli.Tests" />
   </ItemGroup>
 </Project>

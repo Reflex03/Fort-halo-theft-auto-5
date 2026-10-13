@@ -9,6 +9,8 @@ dist/
 *.zip
 # never commit game content or caches extracted from a player's games
 cache/
+# ...but source packages named "cache" are code (fabric/src/client/java/dev/crafttheft/client/cache/)
+!**/src/**/cache/
 extracted/
 *.rpf
 *.map
@@ -16,3 +18,16 @@ extracted/
 *.utoc
 *.ucas
 *.fsb
+*.awc
+*.yft
+*.ytd
+*.ydr
+*.uasset
+*.uexp
+*.ubulk
+*.bk2
+*.usmap
+magic.dat
+# local tooling
+__pycache__/
+*.pyc

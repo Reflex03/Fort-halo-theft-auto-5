@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    MeshDecimator by Mattias Edlund (MIT), vendored unmodified from https://github.com/Whinarn/MeshDecimator
+    commit a1e85d43c0bea241f1952e7c093f83bb8d3ad1d8. See VENDORED.md. Used by CthExtract.Core's Decimate.ToBudget.
+  -->
+  <PropertyGroup>
+    <AssemblyName>MeshDecimator</AssemblyName>
+    <RootNamespace>MeshDecimator</RootNamespace>
+    <!-- upstream code predates nullable reference types and implicit usings -->
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS0618;CS0612;CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+</Project>

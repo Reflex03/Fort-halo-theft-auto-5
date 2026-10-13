@@ -1,0 +1,185 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+// The harness mode for the scripted test client: -Pharness=all|nocache|... (see src/harness).
+def harnessMode = (project.findProperty('harness') ?: 'all').toString()
+def sheetsDir = rootProject.file('../sheets')
+
+loom {
+	splitEnvironmentSourceSets()
+}
+
+sourceSets {
+	// Build-time generator: reads the generated Sheets class (no Minecraft classes) and writes the jar's
+	// sheet-driven resources and original placeholder art. Never shipped.
+	tools {
+		java {
+			srcDirs = ['src/tools/java', 'src/main/java']
+			include 'dev/crafttheft/tools/**', 'dev/crafttheft/gen/**'
+		}
+	}
+	// Scripted scenario test mod (dev and production-style runs only). Never shipped in the release jar.
+	harness {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += client.compileClasspath
+		runtimeClasspath += client.runtimeClasspath
+	}
+	test {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+	}
+}
+
+loom {
+
+	runs {
+		client {
+			programArgs "--width", "1280", "--height", "720", "--username", "Player"
+		}
+		server {
+			runDir "run-server"
+		}
+		// Dev client with the scripted scenario (src/harness, a separate test mod that never ships).
+		harnessClient {
+			client()
+			name = "Harness Client"
+			source sourceSets.harness
+			runDir "run-harness"
+			programArgs "--width", "1280", "--height", "720", "--username", "HarnessPlayer"
+			vmArg "-Dcrafttheft.harness=${harnessMode}"
+			vmArg "-Dcrafttheft.sheetsDir=${sheetsDir.absolutePath}"
+		}
+	}
+
+	mods {
+		"crafttheft" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+		"crafttheft_harness" {
+			sourceSet sourceSets.harness
+		}
+	}
+}
+
+repositories {
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	harnessImplementation sourceSets.main.output
+	harnessImplementation sourceSets.client.output
+
+	testImplementation sourceSets.main.output
+	testImplementation sourceSets.client.output
+	testImplementation sourceSets.tools.output
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	testImplementation platform("org.junit:junit-bom:5.11.4")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+// ---- sheet-driven resources (sounds.json, item models, lang) and original placeholder art -------------------
+def genDir = layout.buildDirectory.dir('generated/sheet-resources')
+tasks.register('genSheetResources', JavaExec) {
+	group = 'crafttheft'
+	description = 'Writes sounds.json, item models, lang and placeholder meshes/art from the sheets (Sheets.java).'
+	classpath = sourceSets.tools.runtimeClasspath
+	mainClass = 'dev.crafttheft.tools.GenResources'
+	inputs.files(sourceSets.tools.runtimeClasspath)
+	outputs.dir(genDir)
+	args genDir.get().asFile.absolutePath
+}
+processResources {
+	dependsOn 'genSheetResources'
+	from(genDir)
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+processHarnessResources {
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE.md") {
+		rename { "LICENSE_crafttheft.md" }
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+// ---- harness jar (production-style launch) ------------------------------------------------------------------
+tasks.register('harnessJar', Jar) {
+	from sourceSets.harness.output
+	destinationDirectory = layout.buildDirectory.dir('devlibs')
+	archiveClassifier = 'harness'
+}
+tasks.register('remapHarnessJar', net.fabricmc.loom.task.RemapJarTask) {
+	dependsOn 'harnessJar'
+	inputFile = tasks.named('harnessJar').flatMap { it.archiveFile }
+	archiveClassifier = 'harness'
+	addNestedDependencies = false
+	// the harness calls inherited Minecraft methods on the mod's own classes (bus.position(), car.moveTo(...)):
+	// the remapper needs the mod's named classes to see that hierarchy
+	classpath.from(sourceSets.main.output, sourceSets.client.output)
+	destinationDirectory = layout.buildDirectory.dir('harness-libs') // test mod: keep it out of build/libs
+}
+
+// Production-style launch: intermediary-mapped jars, real KnotClient, like the Prism instance runs it.
+configurations {
+	productionMods { transitive = false }
+}
+dependencies {
+	productionMods "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+tasks.register("prodHarnessClient", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+	group = 'crafttheft'
+	mods.from(tasks.named("remapJar").flatMap { it.archiveFile })
+	mods.from(tasks.named("remapHarnessJar").flatMap { it.archiveFile })
+	mods.from(configurations.productionMods)
+	useXVFB = true // Loom wraps the game in xvfb-run (DISPLAY is not passed through otherwise)
+	runDir = file("run-prod")
+	jvmArgs.addAll("-Dcrafttheft.harness=${harnessMode}", "-Dcrafttheft.sheetsDir=${sheetsDir.absolutePath}")
+	programArgs.addAll("--width", "1280", "--height", "720", "--username", "HarnessPlayer")
+}
+
+// Production-style dedicated server (Fabric installer + the remapped release jar): checks that the jar loads and ticks
+// on a server, i.e. no client class is reached from common code. scripts/run_server_smoke.sh drives it.
+tasks.register("prodServer", net.fabricmc.loom.task.prod.ServerProductionRunTask) {
+	group = 'crafttheft'
+	mods.from(tasks.named("remapJar").flatMap { it.archiveFile })
+	mods.from(configurations.productionMods)
+	installerVersion = '1.0.1'
+	runDir = file("run-prodserver")
+	programArgs.add("nogui")
+}

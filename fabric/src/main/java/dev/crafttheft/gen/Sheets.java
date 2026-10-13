@@ -166,10 +166,14 @@ public final class Sheets {
     public static final int CHESTS_RADIUS = 320;
     /** entries per chest */
     public static final int CHESTS_ROLLS = 3;
-    /** cars parked around spawn/villages on a new world */
+    /** cars parked around spawn on a new world (villages get extra street cars, see streetChance/maxPerVillage) */
     public static final int CARS_PARKED_COUNT = 24;
     /** blocks around spawn */
     public static final int CARS_RADIUS = 320;
+    /** chance a village street piece gets a parked car (extra to parkedCount) */
+    public static final float CARS_STREET_CHANCE = 0.35f;
+    /** most extra parked cars per village */
+    public static final int CARS_MAX_PER_VILLAGE = 6;
     /** wanted stars right-aligned, px from right edge */
     public static final int HUD_STARS_X = -8;
     /** px from top */

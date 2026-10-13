@@ -1,0 +1,157 @@
+{
+  "doc": "Every third-party file the packaging downloads, pinned by size and SHA-256 (plus SHA-512 where upstream publishes one). build_package.py refuses anything that does not match. 'bundle' = shipped inside CraftTheftHalo-Minecraft-<ver>.zip; 'sources' = the corresponding source mirrored with each release (GPL/LGPL duties, see SOURCE.txt); 'licenseSources' = only read to take licence texts from (tools/fetch_licenses.py). Checked 2026-10-13: every URL answered 200 and matched these hashes.",
+  "versions": {
+    "prism": "11.1.1",
+    "minecraft": "1.21.1",
+    "lwjgl": "3.3.3",
+    "fabricLoader": "0.19.5",
+    "fabricApi": "0.116.17+1.21.1",
+    "qt": "6.10.2",
+    "vcpkgBaseline": "2d6a6cf3ac9a7cc93942c3d289a2f9c661a6f4a7"
+  },
+  "bundle": {
+    "prism": {
+      "name": "Prism Launcher 11.1.1, Windows MSVC x64 portable build (unmodified)",
+      "license": "GPL-3.0-only",
+      "file": "PrismLauncher-Windows-MSVC-Portable-11.1.1.zip",
+      "urls": ["https://github.com/PrismLauncher/PrismLauncher/releases/download/11.1.1/PrismLauncher-Windows-MSVC-Portable-11.1.1.zip"],
+      "size": 20396629,
+      "sha256": "ab35a770fb06d89d2ccc098079db5db329fb4e68f42b72babd8b095efde3d2d7"
+    },
+    "prismLicense": {
+      "name": "Prism Launcher 11.1.1 LICENSE (GPL-3.0 text; the portable zip has no licence file)",
+      "license": "GPL-3.0-only",
+      "file": "PrismLauncher-11.1.1-LICENSE.txt",
+      "urls": ["https://raw.githubusercontent.com/PrismLauncher/PrismLauncher/11.1.1/LICENSE"],
+      "size": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "prismCopying": {
+      "name": "Prism Launcher 11.1.1 COPYING.md (its own third-party notices)",
+      "license": "GPL-3.0-only",
+      "file": "PrismLauncher-11.1.1-COPYING.md",
+      "urls": ["https://raw.githubusercontent.com/PrismLauncher/PrismLauncher/11.1.1/COPYING.md"],
+      "size": 20326,
+      "sha256": "9729ddd9ab5896561e181ef8e1d4271f938e4f9716df0053aa6ccc41381fd40e"
+    },
+    "fabricApi": {
+      "name": "Fabric API 0.116.17+1.21.1 (unmodified; Apache-2.0, LICENSE-fabric-api inside the jar)",
+      "license": "Apache-2.0",
+      "file": "fabric-api-0.116.17+1.21.1.jar",
+      "urls": [
+        "https://cdn.modrinth.com/data/P7dR8mSH/versions/Mys3P7lK/fabric-api-0.116.17%2B1.21.1.jar",
+        "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/0.116.17+1.21.1/fabric-api-0.116.17+1.21.1.jar"
+      ],
+      "size": 2452735,
+      "sha256": "79ac44b40780acbd884b34c50be1e39af682847e5f5cb3b1fddeeaa768dce800",
+      "sha512": "98c478217da19181f0e4df3ea6c2da6bdbda271c7544a4aea048513a49b444f1ff5b71dc0df6303017c48e8ff69b7bb6af6179bdf0d0e09ab3c1ee08411857a8"
+    }
+  },
+  "sources": [
+    {
+      "id": "prism",
+      "name": "Prism Launcher 11.1.1 source (official release tarball)",
+      "covers": "Prism/prismlauncher.exe, prismlauncher_updater.exe, prismlauncher_filelink.exe, jars/*.jar",
+      "license": "GPL-3.0-only",
+      "file": "PrismLauncher-11.1.1.tar.gz",
+      "urls": ["https://github.com/PrismLauncher/PrismLauncher/releases/download/11.1.1/PrismLauncher-11.1.1.tar.gz"],
+      "size": 4127770,
+      "sha256": "9ea53f93714cd2a59dc0f38153690a59a3f06f439934d1410ec364cc7f363eb5"
+    },
+    {
+      "id": "qtbase",
+      "name": "Qt 6.10.2 qtbase source",
+      "covers": "Prism/Qt6Core.dll, Qt6Gui.dll, Qt6Widgets.dll, Qt6Network.dll, Qt6OpenGL.dll, Qt6Xml.dll, platforms/qwindows.dll, styles/qmodernwindowsstyle.dll, tls/*.dll, imageformats/{qgif,qico,qjpeg}.dll",
+      "license": "LGPL-3.0-only",
+      "file": "qtbase-everywhere-src-6.10.2.tar.xz",
+      "urls": ["https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtbase-everywhere-src-6.10.2.tar.xz"],
+      "size": 50374380,
+      "sha256": "aeb78d29291a2b5fd53cb55950f8f5065b4978c25fb1d77f627d695ab9adf21e",
+      "md5": "5401c01b0b60967a3b331d15a861e609"
+    },
+    {
+      "id": "qtsvg",
+      "name": "Qt 6.10.2 qtsvg source",
+      "covers": "Prism/Qt6Svg.dll, iconengines/qsvgicon.dll, imageformats/qsvg.dll",
+      "license": "LGPL-3.0-only",
+      "file": "qtsvg-everywhere-src-6.10.2.tar.xz",
+      "urls": ["https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtsvg-everywhere-src-6.10.2.tar.xz"],
+      "size": 2614740,
+      "sha256": "f07ff80f38caf235187200345392ca7479445ddf49a36c3694cd52a735dad6e1",
+      "md5": "db085b160c374687508ea043df42c889"
+    },
+    {
+      "id": "qtimageformats",
+      "name": "Qt 6.10.2 qtimageformats source",
+      "covers": "Prism/imageformats/{qicns,qtga,qtiff,qwbmp,qwebp}.dll",
+      "license": "LGPL-3.0-only",
+      "file": "qtimageformats-everywhere-src-6.10.2.tar.xz",
+      "urls": ["https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtimageformats-everywhere-src-6.10.2.tar.xz"],
+      "size": 2032388,
+      "sha256": "8b8f9c718638081e7b3c000e7f31910140b1202a98e98df5d1b496fe6f639d67",
+      "md5": "30eda29374400ae42d3100c4fb5bd418"
+    },
+    {
+      "id": "qtnetworkauth",
+      "name": "Qt 6.10.2 qtnetworkauth source",
+      "covers": "Prism/Qt6NetworkAuth.dll",
+      "license": "GPL-3.0-only",
+      "file": "qtnetworkauth-everywhere-src-6.10.2.tar.xz",
+      "urls": ["https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtnetworkauth-everywhere-src-6.10.2.tar.xz"],
+      "size": 434660,
+      "sha256": "4f29fd9e4b505f5714fc42296b04c701f66ced185c49de4d520cb8de4b1981b3",
+      "md5": "ca75d538bad8be49a3aed7a7195a37c9"
+    },
+    {
+      "id": "lzo",
+      "name": "LZO 2.10 source (as built by vcpkg port lzo, port-version 9)",
+      "covers": "Prism/lzo2.dll",
+      "license": "GPL-2.0-or-later",
+      "file": "lzo-2.10.tar.gz",
+      "urls": ["https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz"],
+      "size": 600622,
+      "sha256": "c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072",
+      "sha512": "a3dae5e4a6b93b1f5bf7435e8ab114a9be57252e9efc5dd444947d7a2d031b0819f34bcaeb35f60b5629a01b1238d738735a64db8f672be9690d3c80094511a4"
+    },
+    {
+      "id": "libqrencode",
+      "name": "libqrencode 4.1.1 source (git commit vcpkg builds, port-version 3)",
+      "covers": "Prism/qrencode.dll",
+      "license": "LGPL-2.1-or-later",
+      "git": "https://github.com/fukuchi/libqrencode.git",
+      "commit": "715e29fd4cd71b6e452ae0f4e36d917b43122ce8",
+      "trees": {"": "ceec5110f2bd582f990b36480046c6d829213461"},
+      "file": "libqrencode-715e29fd4cd71b6e452ae0f4e36d917b43122ce8.tar"
+    },
+    {
+      "id": "vcpkg",
+      "name": "vcpkg build scripts and ports used for lzo2.dll and qrencode.dll (Prism's vcpkg baseline)",
+      "covers": "the scripts that built Prism/lzo2.dll and Prism/qrencode.dll",
+      "license": "MIT",
+      "git": "https://github.com/microsoft/vcpkg.git",
+      "commit": "2d6a6cf3ac9a7cc93942c3d289a2f9c661a6f4a7",
+      "trees": {
+        "ports/lzo": "fcd8844a4e80d418bf894cf93a0453f067e404de",
+        "ports/libqrencode": "597b668f55e912cd6687526ace66d83065321cd1",
+        "ports/vcpkg-cmake": "e74aa1e8f93278a8e71372f1fa08c3df420eb840",
+        "ports/vcpkg-cmake-config": "97a63e4bc1a17422ffe4eff71da53b4b561a7841",
+        "scripts/cmake": "646aa1949de4f9bcb4f83d9948f9551392c262c2",
+        "scripts/buildsystems": "231025eb0a95f3f47c21ce0c961c151e46b92438",
+        "triplets/x64-windows.cmake": "d0be7297f0c46862702fd29f92a76a765da00c0a",
+        "LICENSE.txt": "4d23e0e39b2531c41499e7b1c5ec0efffd15c6b6"
+      },
+      "file": "vcpkg-2d6a6cf3ac9a7cc93942c3d289a2f9c661a6f4a7-subset.tar"
+    }
+  ],
+  "licenseSources": [
+    {
+      "id": "bzip2",
+      "name": "bzip2 1.0.8 source (only its LICENSE is used)",
+      "file": "bzip2-1.0.8.tar.gz",
+      "urls": ["https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"],
+      "size": 810029,
+      "sha256": "ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269",
+      "sha512": "083f5e675d73f3233c7930ebe20425a533feedeaaa9d8cc86831312a6581cefbe6ed0d08d2fa89be81082f2a5abdabca8b3c080bf97218a1bd59dc118a30b9f3"
+    }
+  ]
+}

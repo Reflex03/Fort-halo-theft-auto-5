@@ -1,0 +1,5 @@
+# build outputs and the download cache of build_package.py (never committed)
+out/
+downloads/
+__pycache__/
+*.pyc

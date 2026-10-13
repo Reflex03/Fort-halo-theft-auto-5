@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    End-to-end helper for the real extractor (never shipped): builds fake game folders from the modules' own synthetic
+    builders (no game data) and checks a finished cache against docs/CONTRACTS.md. Driven by extractor/tests/e2e.sh and
+    by CthExtract.Cli.Tests (RealCliEndToEndTests).
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+    <RootNamespace>CthExtract.E2E</RootNamespace>
+    <!-- the referenced xunit v3 test projects bring generated entry points: ours is CthExtract.E2E.Program -->
+    <StartupObject>CthExtract.E2E.Program</StartupObject>
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/CthExtract.Core/CthExtract.Core.csproj" />
+    <ProjectReference Include="../CthExtract.Halo.Tests/CthExtract.Halo.Tests.csproj" />
+    <ProjectReference Include="../CthExtract.Gta.Tests/CthExtract.Gta.Tests.csproj" />
+    <ProjectReference Include="../CthExtract.Fortnite.Tests/CthExtract.Fortnite.Tests.csproj" />
+  </ItemGroup>
+</Project>

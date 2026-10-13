@@ -1,8 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>CthExtract.Gta</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../CthExtract.Core/CthExtract.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- BCn texture decoding (MIT OR Unlicense) and its dependency (MIT). -->
+    <PackageReference Include="BCnEncoder.Net" Version="2.3.0" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
+    <!-- PCM -> Ogg Vorbis: the shared encoder in CthExtract.Core (OggVorbis.cs) brings OggVorbisEncoder 1.2.2 (MIT;
+         Xiph BSD-3 notice) and NVorbis 0.10.5 (MIT), which also decode-checks every .ogg. -->
+  </ItemGroup>
+  <ItemGroup>
+    <!-- gta-toolkit (MIT): SHA1 hash constants + NG crypto algorithm, see vendor/gta-toolkit/VENDORED.md -->
+    <Compile Include="../../vendor/gta-toolkit/*.cs" Link="Vendor/gta-toolkit/%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Gta.Tests" />
   </ItemGroup>
 </Project>

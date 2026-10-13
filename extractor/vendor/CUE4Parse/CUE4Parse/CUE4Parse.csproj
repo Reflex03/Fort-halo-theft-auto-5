@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Vendored from https://github.com/FabianFG/CUE4Parse @ 1e3293d4 (Apache-2.0), stripped and patched for
+       CthExtract: see ../VENDORED.md. No native build (CUE4Parse-Natives is not vendored), no embedded resources,
+       no OodleSharp / Oodle.NET / Zlib-ng.NET, Fmod5Sharp comes from extractor/vendor/Fmod5Sharp. -->
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>C# Parser for Unreal Engine packages &amp; assets</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blake3" />
+    <PackageReference Include="BouncyCastle.Cryptography" />
+    <PackageReference Include="FixedMathSharp" />
+    <PackageReference Include="GenericReader" />
+    <PackageReference Include="Infrablack.UE4Config" />
+    <PackageReference Include="LZMA-SDK" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="OffiUtils" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" />
+    <PackageReference Include="SubstreamSharp" />
+    <PackageReference Include="System.IO.Hashing" />
+    <PackageReference Include="System.Numerics.Tensors" />
+    <PackageReference Include="VGAudio" />
+    <PackageReference Include="ZstdSharp.Port" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- one Fmod5Sharp per exe: the vendored copy (libvorbis-generated setup table), not the NuGet package -->
+    <ProjectReference Include="../../Fmod5Sharp/Fmod5Sharp/Fmod5Sharp.csproj" />
+  </ItemGroup>
+
+</Project>

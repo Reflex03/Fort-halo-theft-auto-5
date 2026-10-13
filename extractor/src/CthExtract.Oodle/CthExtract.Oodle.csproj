@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    C# port of the ooz Kraken/Mermaid/Selkie/Leviathan decompressor
+    (https://github.com/powzix/ooz, GPL-3.0-or-later). See extractor/vendor/ooz/VENDORED.md.
+    No dependencies, no native code, never loads or downloads an Oodle DLL.
+  -->
+  <PropertyGroup>
+    <RootNamespace>CthExtract.Oodle</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Oodle.Tests" />
+  </ItemGroup>
+</Project>

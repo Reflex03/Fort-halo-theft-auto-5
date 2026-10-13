@@ -1,0 +1,8 @@
+{
+	"required": true,
+	"package": "dev.crafttheft.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": ["PackRepositoryMixin", "CameraMixin", "ZoomMixin", "GuiShieldMixin"],
+	"injectors": { "defaultRequire": 1 },
+	"overwrites": { "requireAnnotations": true }
+}

@@ -1,0 +1,42 @@
+﻿using System.IO;
+
+namespace Reclaimer.Blam.HaloInfinite
+{
+    public class StringMapper
+    {
+        public static StringMapper Instance { get; } = new();
+
+        public Dictionary<int, string> StringMappings { get; } = new();
+
+        private StringMapper() { }
+
+        /// <summary>
+        /// Loads string mappings from a file that contains hashes and
+        /// their corresponding strings on each line, separated by a semicolon.
+        /// </summary>
+        public void LoadStringMap(string filename)
+        {
+            StringMappings.Clear();
+            foreach (var line in File.ReadLines(filename))
+            {
+                var parts = line.Split(":");
+                if (parts.Length != 2)
+                    continue;
+
+                try
+                {
+                    StringMappings[Convert.ToInt32(parts[0])] = parts[1];
+                }
+                catch (OverflowException)
+                {
+                    try
+                    {
+                        StringMappings[unchecked((int)Convert.ToUInt32(parts[0]))] = parts[1];
+                    }
+                    catch { }
+                }
+                catch { }
+            }
+        }
+    }
+}

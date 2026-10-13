@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    cthextract.exe: reads Halo 3 (MCC), GTA V and Fortnite content from the player's own installs into the Craft Theft
+    Halo cache (docs/CONTRACTS.md). GPL-3.0-only (links Reclaimer, GPL-3.0).
+    WinExe = GUI subsystem: neither Melty's setup step nor the mod's ProcessBuilder ever flashes a console window.
+    Everything goes to <cache>/extract.log; use the console option to attach to the calling console when debugging.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>cthextract</AssemblyName>
+    <RootNamespace>CthExtract</RootNamespace>
+    <Product>Craft Theft Halo content extractor</Product>
+    <Description>Reads game content from the player's own Halo MCC, GTA V and Fortnite installs into the Craft Theft Halo cache.</Description>
+    <Copyright>GPL-3.0-only</Copyright>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- one batch job at a time: workstation, non-concurrent GC keeps memory and threads low -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <!-- CUE4Parse / Reclaimer use reflection: never trim (packaging research 5.2) -->
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CthExtract.Core/CthExtract.Core.csproj" />
+    <ProjectReference Include="../CthExtract.Halo/CthExtract.Halo.csproj" />
+    <ProjectReference Include="../CthExtract.Gta/CthExtract.Gta.csproj" />
+    <ProjectReference Include="../CthExtract.Fortnite/CthExtract.Fortnite.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CthExtract.Cli.Tests" />
+  </ItemGroup>
+</Project>

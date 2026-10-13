@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Test-only tool for the Fabric mod (never shipped). Writes a SYNTHETIC cache - original shapes, pixel art and
+    tones generated here - through the extractor's own writers (CthExtract.Core: ExtractContext, Cthm, Png,
+    Manifest, ProgressFile), so the mod is tested against exactly the files the real extractor writes.
+    It also behaves like cthextract.exe on the command line (the config, out and only options, progress.json, manifest.json
+    written last, exit codes), so the mod's CacheGuard can run it as its extractor in the test harness.
+    Sounds are encoded with the system ffmpeg (libvorbis).
+    Licence: GPL-3.0-only (it links CthExtract.Core, part of the GPL-3.0-only extractor; see ../../LICENSE.md), unlike
+    the rest of fabric/ (CC BY-NC-SA 4.0).
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <AssemblyName>CthSynth</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../extractor/src/CthExtract.Core/CthExtract.Core.csproj" />
+  </ItemGroup>
+</Project>

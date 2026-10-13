@@ -1,0 +1,31 @@
+<Project>
+  <!-- Central package versions of upstream 1e3293d4, minus what the CthExtract copy dropped: OodleSharp, Oodle.NET,
+       Zlib-ng.NET (Oodle goes through Compression.UseOodle; zlib through System.IO.Compression), Fmod5Sharp (project
+       reference to extractor/vendor/Fmod5Sharp), SkiaSharp.NativeAssets.Linux and the test-only packages. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="AssetRipper.TextureDecoder" Version="2.6.2" />
+    <PackageVersion Include="Blake3" Version="3.0.2" />
+    <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
+    <PackageVersion Include="FixedMathSharp" Version="4.0.1" />
+    <PackageVersion Include="GenericReader" Version="2.3.0" />
+    <PackageVersion Include="Infrablack.UE4Config" Version="0.7.2.97" />
+    <PackageVersion Include="K4os.Compression.LZ4.Streams" Version="1.3.8" />
+    <PackageVersion Include="LZMA-SDK" Version="22.1.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="OffiUtils" Version="3.2.0" />
+    <PackageVersion Include="Serilog" Version="4.3.1" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="SharpGLTF.Core" Version="1.0.6" />
+    <PackageVersion Include="SharpGLTF.Toolkit" Version="1.0.6" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="[3.1.12]" />
+    <PackageVersion Include="SkiaSharp" Version="[2.88.9]" />
+    <PackageVersion Include="SubstreamSharp" Version="1.0.3" />
+    <PackageVersion Include="System.IO.Hashing" Version="10.0.8" />
+    <PackageVersion Include="System.Numerics.Tensors" Version="10.0.10" />
+    <PackageVersion Include="VGAudio" Version="2.2.1" />
+    <PackageVersion Include="ZstdSharp.Port" Version="0.8.8" />
+  </ItemGroup>
+</Project>

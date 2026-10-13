@@ -18,6 +18,11 @@ public sealed class Log : IDisposable
             _w = new StreamWriter(path, append: true, new UTF8Encoding(false)) { AutoFlush = true };
         }
     }
+    /// <summary>Write a line exactly as given (already timestamped, e.g. relayed from a worker process).</summary>
+    public void Raw(string line)
+    {
+        lock (_lock) { _w?.WriteLine(line); try { Console.WriteLine(line); } catch { } }
+    }
     public void Info(string m) => Write("INFO", m);
     public void Warn(string m) => Write("WARN", m);
     public void Error(string m) => Write("ERROR", m);

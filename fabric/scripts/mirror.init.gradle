@@ -1,0 +1,19 @@
+// Gradle init script: route Maven Central through Google's mirror (repo.maven.apache.org intermittently returns 429 here).
+def MIRROR = 'https://maven-central.storage-download.googleapis.com/maven2/'
+def fix = { repos ->
+    repos.configureEach { r ->
+        if (r instanceof MavenArtifactRepository) {
+            def u = r.url.toString()
+            if (u.contains('repo.maven.apache.org') || u.contains('repo1.maven.org')) r.url = MIRROR
+        }
+    }
+}
+beforeSettings { s ->
+    fix(s.pluginManagement.repositories)
+    fix(s.buildscript.repositories)
+    fix(s.dependencyResolutionManagement.repositories)
+}
+allprojects { p ->
+    fix(p.buildscript.repositories)
+    fix(p.repositories)
+}

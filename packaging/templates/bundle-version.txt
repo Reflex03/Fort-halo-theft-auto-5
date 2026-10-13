@@ -1,0 +1,6 @@
+Craft Theft Halo $version
+source commit $commit
+Prism Launcher $prism (official portable Windows MSVC build, unmodified)
+Minecraft $minecraft, Fabric Loader $loader, LWJGL $lwjgl: downloaded by Prism, not included
+Fabric API $fabricapi
+bin/cthextract.exe sha256 $exe_sha256 (.NET $runtime, self-contained)

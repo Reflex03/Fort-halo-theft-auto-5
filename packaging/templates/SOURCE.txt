@@ -1,0 +1,47 @@
+Craft Theft Halo $version: where to get the source code
+=======================================================
+
+Some programs in this folder are licensed under the GNU General Public License (GPL) or the GNU Lesser General
+Public License (LGPL). You are entitled to their complete corresponding source code, free of charge. It is
+available from the places below for as long as this release is offered, and for at least three years after.
+The licence texts are in licenses/ (GPL-3.0.txt, GPL-2.0.txt, LGPL-3.0.txt, LGPL-2.1.txt).
+
+All of it in one file (our mirror, uploaded with every release):
+
+    $repo/releases/download/v$version/$sources_zip
+
+It holds every upstream file listed below (folder upstream/, checked against the hashes given here), the source
+of this repository at the commit this release was built from (folder crafttheft/), and a SHA256SUMS file.
+If that link ever stops working, open an issue at $repo/issues and we will send you the source.
+
+
+1. bin/cthextract.exe: our game-content extractor  [GPL-3.0-only]
+--------------------------------------------------------------------
+Source: $repo
+        commit $commit (release tag v$version), folder extractor/
+It includes the vendored libraries in extractor/vendor/ (Reclaimer, CUE4Parse, Fmod5Sharp, MeshDecimator,
+gta-toolkit, the ooz and vgmstream ports) with their patches. Build: extractor/build.sh (the .NET $runtime runtime
+is compiled in: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true).
+
+
+2. Prism Launcher $prism and the libraries it ships with  (folder Prism/, unmodified official build)
+-----------------------------------------------------------------------------------------------------
+Prism Launcher is GPL-3.0-only. Its own copyright notices are in Prism/COPYING-PrismLauncher.md.
+Qt $qt is LGPL-3.0-only, except Qt Network Authorization (Prism/Qt6NetworkAuth.dll), which is GPL-3.0-only.
+LZO (Prism/lzo2.dll) is GPL-2.0-or-later; libqrencode (Prism/qrencode.dll) is LGPL-2.1-or-later.
+Both were built by vcpkg (baseline $vcpkg); the vcpkg ports and scripts that built them are included.
+The other libraries Prism ships (libarchive, bzip2, xz, lz4, zstd, zlib, cmark, tomlplusplus) are under permissive
+licences; their notices are in licenses/prism-libs/ and THIRD-PARTY-NOTICES.md.
+
+Upstream sources:
+
+$sources_list
+
+
+3. Everything else
+------------------
+The mod itself (the crafttheft jar in Prism/instances/CraftTheftHalo/.minecraft/mods) and our own files here are
+licensed CC BY-NC-SA 4.0 (licenses/CC-BY-NC-SA-4.0.txt); their source is the same repository.
+Fabric API (Apache-2.0) comes unmodified from https://github.com/FabricMC/fabric (tag $fabricapi).
+Minecraft, Fabric Loader, LWJGL and Java are not included: Prism Launcher downloads them from Mojang and FabricMC.
+Nothing from Halo, Grand Theft Auto V or Fortnite is included; see README.txt.

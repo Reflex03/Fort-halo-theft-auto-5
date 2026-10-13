@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "crafttheft",
+	"version": "${version}",
+	"name": "Craft Theft Halo",
+	"description": "Ride the Battle Bus over a Minecraft world, loot Halo 3 weapons and Fortnite heals from supply chests, steal GTA V cars and outrun the police. Models, textures and sounds are read from your own Halo MCC, GTA V and Fortnite installs by the bundled extractor; the mod ships only original placeholder art.",
+	"authors": ["Craft Theft Halo"],
+	"license": "CC-BY-NC-SA-4.0",
+	"icon": "assets/crafttheft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["dev.crafttheft.CraftTheft"],
+		"client": ["dev.crafttheft.client.CraftTheftClient"]
+	},
+	"mixins": [
+		"crafttheft.mixins.json",
+		{ "config": "crafttheft.client.mixins.json", "environment": "client" }
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": ">=0.116.0"
+	}
+}

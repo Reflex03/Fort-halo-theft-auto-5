@@ -34,9 +34,9 @@
   {
    "id": "attack_entity",
    "side": "server",
-   "event": "AttackEntityCallback.EVENT",
-   "handler": "CrimeSystem.onAttack",
-   "purpose": "villager/golem/police assault -> wanted stars"
+   "event": "AttackEntityCallback.EVENT (melee) + Halo weapon hits (WeaponSystem hitscan, HaloProjectile.onHitEntity, Explosions.blast)",
+   "handler": "CrimeSystem.onAttack / CrimeSystem.onRangedHit",
+   "purpose": "villager/golem/police assault -> wanted stars (melee and ranged)"
   },
   {
    "id": "entity_death",
@@ -85,7 +85,7 @@
    "side": "server",
    "event": "ServerLifecycleEvents.SERVER_STARTED",
    "handler": "WorldSetup.onServerStarted",
-   "purpose": "place loot chests + parked cars once per world (SavedData)"
+   "purpose": "plan loot chests + parked cars once per world (SavedData); each is placed when its chunk loads (no forced generation at world start); reload weapon/shield stats"
   },
   {
    "id": "player_join",
@@ -97,7 +97,7 @@
   {
    "id": "chunk_generate",
    "side": "server",
-   "event": "ServerChunkEvents.CHUNK_LOAD (new chunks)",
+   "event": "ServerChunkEvents.CHUNK_GENERATE",
    "handler": "WorldSetup.onChunkGenerated",
    "purpose": "park cars on village streets"
   },
@@ -175,7 +175,7 @@
    "id": "client_started",
    "side": "client",
    "event": "ClientLifecycleEvents.CLIENT_STARTED",
-   "handler": "CacheGuard.onClientStarted",
+   "handler": "CacheGuard.onClientStarted (+ ScreenEvents.AFTER_INIT on TitleScreen: progress screen while blocking, cache-ready check)",
    "purpose": "run/refresh the extractor if the cache is missing or failed; reload resources"
   },
   {
@@ -188,9 +188,44 @@
   {
    "id": "test_mode",
    "side": "both",
-   "event": "system property / melty test file",
-   "handler": "MeltyTest.tick",
-   "purpose": "Melty test runs: play a scripted scenario and log check results"
+   "event": "Melty test file %LOCALAPPDATA%/Melty/test/craft-theft-halo.json (read once in ModInitializer)",
+   "handler": "MeltyChecks.start -> MeltyTest.start; MeltyChecks.report -> MeltyTest.report",
+   "purpose": "Melty test runs: report each check (docs/requests/mod.md) once, when it happens in normal play"
+  },
+  {
+   "id": "player_respawn",
+   "side": "server",
+   "event": "ServerPlayerEvents.AFTER_RESPAWN",
+   "handler": "ShieldSystem (respawn)",
+   "purpose": "shield back to systems.shield.start, wanted level cleared after death"
+  },
+  {
+   "id": "bus_jump",
+   "side": "both",
+   "event": "C2S payload crafttheft:bus_jump (ServerPlayNetworking) + mixin accessor LivingEntity#jumping (LivingEntityAccessor)",
+   "handler": "ClientInput.tick -> BattleBusEntity.requestDrop",
+   "purpose": "the jump key of a bus rider drops them, also while the server is busy (the vanilla input packet's jumping flag alone can be overwritten before the bus ticks)"
+  },
+  {
+   "id": "glider_layer",
+   "side": "client",
+   "event": "LivingEntityFeatureRendererRegistrationCallback.EVENT",
+   "handler": "GliderLayer.render",
+   "purpose": "draw the Fortnite glider mesh on gliding players"
+  },
+  {
+   "id": "hide_shield_hearts",
+   "side": "client",
+   "event": "mixin Gui#renderPlayerHealth (redirect Player#getAbsorptionAmount)",
+   "handler": "GuiShieldMixin",
+   "purpose": "the Halo shield is vanilla absorption shown as the shield bar; hide the golden hearts"
+  },
+  {
+   "id": "server_stopped",
+   "side": "server",
+   "event": "ServerLifecycleEvents.SERVER_STOPPED",
+   "handler": "GameTick.clearWorldState",
+   "purpose": "drop per-world state kept in statics so the next world in the same game session starts clean"
   }
  ]
 }
