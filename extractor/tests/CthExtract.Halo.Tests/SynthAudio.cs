@@ -18,6 +18,12 @@ public static class SynthAudio
     /// <summary>A tone (different per channel) encoded with OggVorbisEncoder; also returns a normal .ogg of the same packets as a decode reference.</summary>
     public static Encoded Encode(int channels, int rate, float quality, double seconds, double freq = 440)
     {
+        // OggVorbisEncoder is not thread-safe (parallel test classes made ProcessingState.Create throw)
+        lock (CthExtract.Core.OggVorbis.EncoderLock) return EncodeUnlocked(channels, rate, quality, seconds, freq);
+    }
+
+    private static Encoded EncodeUnlocked(int channels, int rate, float quality, double seconds, double freq)
+    {
         var info = VorbisInfo.InitVariableBitRate(channels, rate, quality);
         var setup = HeaderPacketBuilder.BuildBooksPacket(info).PacketData;
         var packets = new List<byte[]>();

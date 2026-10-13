@@ -163,7 +163,8 @@ public static class OggVorbis
     /// <summary>Lead-in the encoder drops (BlockSizes[1]/2) for these settings.</summary>
     public static int LeadIn(int channels, int rate, float quality)
     {
-        var info = VorbisInfo.InitVariableBitRate(channels, rate, quality);
+        VorbisInfo info;
+        lock (EncoderLock) info = VorbisInfo.InitVariableBitRate(channels, rate, quality);
         return info.CodecSetup?.BlockSizes is { Length: > 1 } bs ? bs[1] / 2 : 1024;
     }
 
@@ -171,6 +172,16 @@ public static class OggVorbis
     /// silence at the start (the encoder drops that much) and a quarter of that at the end.
     /// <paramref name="padLeadIn"/> = false only exists to measure the encoder's behaviour in tests.</summary>
     public static byte[] EncodeFloat(float[][] channels, int rate, float quality, bool padLeadIn = true)
+    {
+        // OggVorbisEncoder 1.2.2 is not thread-safe: two encodes at once can throw inside ProcessingState.Create
+        // (seen as a flaky test). Encodes are short, so serialise them.
+        lock (EncoderLock) return EncodeFloatUnlocked(channels, rate, quality, padLeadIn);
+    }
+
+    /// <summary>Hold this while using OggVorbisEncoder anywhere in the process.</summary>
+    public static readonly object EncoderLock = new();
+
+    private static byte[] EncodeFloatUnlocked(float[][] channels, int rate, float quality, bool padLeadIn)
     {
         int ch = channels.Length;
         using var output = new MemoryStream();
