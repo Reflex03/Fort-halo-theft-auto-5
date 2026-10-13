@@ -35,6 +35,7 @@ Fortnite. Nothing from those games is shipped.
 | **Halo: The Master Chief Collection** | with **Halo 3** installed (MCC installs each game separately). |
 | **Grand Theft Auto V Legacy** | the original PC edition. Only its story-mode files are read. The mod never touches GTA Online, and GTA V is not even started. |
 | **Fortnite** | installed through the Epic Games Launcher. It is not started either. |
+| **Microsoft Visual C++ 2015-2022 runtime (x64)** | the bundled Prism Launcher needs it. Fortnite's and the Master Chief Collection's own installers already put it on your PC, so there is nothing to do; if Prism ever reports `MSVCP140.dll` missing, install it from https://aka.ms/vs/17/release/vc_redist.x64.exe. (Its licence does not let us ship it ourselves.) |
 | **Windows 10 (1903 or later) or 11, 64-bit** | about 2 GB free for Minecraft, Java and the content read from your games. |
 | **Internet on the first Play** | Minecraft downloads itself, and the content reader fetches the public keys it needs for Fortnite and GTA V. |
 
